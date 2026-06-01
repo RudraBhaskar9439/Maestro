@@ -9,20 +9,17 @@ import {PoolKey} from "@uniswap/v4-core/src/types/PoolKey.sol";
 import {PoolId, PoolIdLibrary} from "@uniswap/v4-core/src/types/PoolId.sol";
 import {BalanceDelta} from "@uniswap/v4-core/src/types/BalanceDelta.sol";
 import {BeforeSwapDelta, BeforeSwapDeltaLibrary} from "@uniswap/v4-core/src/types/BeforeSwapDelta.sol";
+import {LPFeeLibrary} from "@uniswap/v4-core/src/libraries/LPFeeLibrary.sol";
 
-contract Counter is BaseHook {
+import {HarbergerAuction} from "./auction/HarbergerAuction.sol";
+
+/// @title MaestroHook
+/// @notice Auction-managed AMM hook for Uniswap v4. The pool fee is set by whoever wins the
+///         continuous Harberger auction for the manager role (see {HarbergerAuction}); rent
+///         paid by the manager accrues for LPs. Pools using this hook MUST be initialized with
+///         the dynamic-fee flag so the manager's fee can be applied via `beforeSwap`.
+contract MaestroHook is BaseHook, HarbergerAuction {
     using PoolIdLibrary for PoolKey;
-
-    // NOTE: ---------------------------------------------------------
-    // state variables should typically be unique to a pool
-    // a single hook contract should be able to service multiple pools
-    // ---------------------------------------------------------------
-
-    mapping(PoolId => uint256 count) public beforeSwapCount;
-    mapping(PoolId => uint256 count) public afterSwapCount;
-
-    mapping(PoolId => uint256 count) public beforeAddLiquidityCount;
-    mapping(PoolId => uint256 count) public beforeRemoveLiquidityCount;
 
     constructor(IPoolManager _poolManager) BaseHook(_poolManager) {}
 
@@ -45,25 +42,23 @@ contract Counter is BaseHook {
         });
     }
 
-    // -----------------------------------------------
-    // NOTE: see IHooks.sol for function documentation
-    // -----------------------------------------------
-
+    /// @dev Advance the auction, then apply the current manager's fee for this swap.
     function _beforeSwap(address, PoolKey calldata key, SwapParams calldata, bytes calldata)
         internal
         override
         returns (bytes4, BeforeSwapDelta, uint24)
     {
-        beforeSwapCount[key.toId()]++;
-        return (BaseHook.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, 0);
+        PoolId id = key.toId();
+        _poke(id);
+        uint24 feeWithOverride = currentFee(id) | LPFeeLibrary.OVERRIDE_FEE_FLAG;
+        return (BaseHook.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, feeWithOverride);
     }
 
-    function _afterSwap(address, PoolKey calldata key, SwapParams calldata, BalanceDelta, bytes calldata)
+    function _afterSwap(address, PoolKey calldata, SwapParams calldata, BalanceDelta, bytes calldata)
         internal
         override
         returns (bytes4, int128)
     {
-        afterSwapCount[key.toId()]++;
         return (BaseHook.afterSwap.selector, 0);
     }
 
@@ -72,7 +67,7 @@ contract Counter is BaseHook {
         override
         returns (bytes4)
     {
-        beforeAddLiquidityCount[key.toId()]++;
+        _poke(key.toId());
         return BaseHook.beforeAddLiquidity.selector;
     }
 
@@ -81,7 +76,7 @@ contract Counter is BaseHook {
         override
         returns (bytes4)
     {
-        beforeRemoveLiquidityCount[key.toId()]++;
+        _poke(key.toId());
         return BaseHook.beforeRemoveLiquidity.selector;
     }
 }
