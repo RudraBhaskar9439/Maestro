@@ -11,7 +11,10 @@ am-AMM (unsolved in the paper) + an autonomous cross-chain manager via Reactive 
   - `src/auction/HarbergerAuction.sol`: bid / deposit / per-block rent / K-block displacement / pull-payment refunds.
   - `src/MaestroHook.sol`: applies the manager's fee via `beforeSwap` (dynamic-fee pool); pokes auction on swaps & liquidity changes.
   - `test/MaestroHook.t.sol`: 7 tests — promotion after K, displacement + refund, rent accrual, fee control, guards. ✅ all passing.
-- [ ] **Phase 2 — Rent distribution to LPs.** `RentDistributor.sol` (rewardPerShare accumulator); track LP shares; invariant: rent charged == rent claimable.
+- [x] **Phase 2 — Rent distribution to LPs.**
+  - Rent/deposits switched from native ETH to the pool's **`currency1`** (ERC-20).
+  - Rent distributed to LPs via the PoolManager's native **`donate()`** (pro-rata to in-range liquidity) — no custom share ledger; fully composable with v4 accounting. Settled with `CurrencySettler` from the hook's own balance.
+  - Conservation invariant test: `totalRentCharged == totalRentDonated + accruedRent`. ✅ 9/9 tests passing.
 - [ ] **Phase 3 — Concentrated-liquidity extension (Novel #1).** `ConcentratedManager.sol`: manager-controlled active-tick concentration.
 - [ ] **Phase 4 — Reactive autonomous manager (Novel #2).** `MaestroManagerRSC.sol` + `ManagerCallback.sol`; cross-chain round trip drives the manager with no human.
 - [ ] **Phase 5 — Pyth + arbitrage capture.** Oracle feed; `LVRMath`; manager captures arb when pool is stale.
@@ -19,7 +22,7 @@ am-AMM (unsolved in the paper) + an autonomous cross-chain manager via Reactive 
 - [ ] **Phase 7 — Bots, demo, tests, pitch.** Scripted bidders + evil-arb bot; demo script; video; polish.
 
 ## Phase 1 design notes / simplifications to revisit
-- Deposits & rent are in **native ETH** for now; Phase 2 decides the LP payout currency.
+- Deposits & rent are in the pool's **`currency1`** (ERC-20); rent is donated to LPs via v4 `donate()`. Native-currency pools are rejected (`NativeCurrencyNotSupported`).
 - `K = 10`, `F_MAX = 5%`, `DEFAULT_FEE = 0.30%` — constants in `HarbergerAuction.sol`.
 - Refunds use **pull payments** (`withdraw()`), avoiding external calls inside the PoolManager swap lock.
 - Pools MUST be initialized with `LPFeeLibrary.DYNAMIC_FEE_FLAG`.

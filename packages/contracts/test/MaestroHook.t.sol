@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-import {Test} from "forge-std/Test.sol";
-
 import {IHooks} from "@uniswap/v4-core/src/interfaces/IHooks.sol";
 import {Hooks} from "@uniswap/v4-core/src/libraries/Hooks.sol";
 import {TickMath} from "@uniswap/v4-core/src/libraries/TickMath.sol";
@@ -16,6 +14,7 @@ import {StateLibrary} from "@uniswap/v4-core/src/libraries/StateLibrary.sol";
 import {LiquidityAmounts} from "@uniswap/v4-core/test/utils/LiquidityAmounts.sol";
 import {IPositionManager} from "@uniswap/v4-periphery/src/interfaces/IPositionManager.sol";
 import {Constants} from "@uniswap/v4-core/test/utils/Constants.sol";
+import {MockERC20} from "solmate/src/test/utils/mocks/MockERC20.sol";
 
 import {EasyPosm} from "./utils/libraries/EasyPosm.sol";
 import {BaseTest} from "./utils/BaseTest.sol";
@@ -39,14 +38,14 @@ contract MaestroHookTest is BaseTest {
     address alice = makeAddr("alice");
     address bob = makeAddr("bob");
 
-    uint128 constant ALICE_RENT = 2 gwei;
-    uint128 constant BOB_RENT = 5 gwei;
+    uint128 constant ALICE_RENT = 1e15; // currency1 per block
+    uint128 constant BOB_RENT = 3e15;
+    uint256 constant DEPOSIT = 1e18;
 
     function setUp() public {
         deployArtifactsAndLabel();
         (currency0, currency1) = deployCurrencyPair();
 
-        // Hook address must encode its permission flags.
         address flags = address(
             uint160(
                 Hooks.BEFORE_SWAP_FLAG | Hooks.AFTER_SWAP_FLAG | Hooks.BEFORE_ADD_LIQUIDITY_FLAG
@@ -74,9 +73,23 @@ contract MaestroHookTest is BaseTest {
         positionManager.mint(
             poolKey, tickLower, tickUpper, liquidityAmount, amount0 + 1, amount1 + 1, address(this), block.timestamp, Constants.ZERO_BYTES
         );
+    }
 
-        vm.deal(alice, 100 ether);
-        vm.deal(bob, 100 ether);
+    // ── helpers ──
+
+    function _bid(address who, uint128 rate, uint256 deposit) internal {
+        MockERC20 token = MockERC20(Currency.unwrap(currency1));
+        token.mint(who, deposit);
+        vm.startPrank(who);
+        token.approve(address(hook), deposit);
+        hook.bid(poolKey, rate, deposit);
+        vm.stopPrank();
+    }
+
+    function _becomeManager(address who, uint128 rate) internal {
+        _bid(who, rate, DEPOSIT);
+        vm.roll(block.number + hook.K() + 1);
+        hook.poke(poolId);
     }
 
     function _swap() internal returns (BalanceDelta) {
@@ -95,16 +108,13 @@ contract MaestroHookTest is BaseTest {
 
     function test_defaultFee_whenNoManager() public {
         assertEq(hook.currentFee(poolId), hook.DEFAULT_FEE());
-        _swap(); // must not revert on a dynamic-fee pool with no manager
+        _swap();
     }
 
     // ── auction promotion ──
 
     function test_bid_promotesAfterKBlocks() public {
-        vm.prank(alice);
-        hook.bid{value: 1 ether}(poolId, ALICE_RENT);
-
-        // Before the K-block delay, alice is only the pending bidder.
+        _bid(alice, ALICE_RENT, DEPOSIT);
         hook.poke(poolId);
         assertEq(hook.getLease(poolId).manager, address(0), "promoted too early");
 
@@ -117,59 +127,65 @@ contract MaestroHookTest is BaseTest {
     }
 
     function test_higherBid_displacesManager() public {
-        vm.prank(alice);
-        hook.bid{value: 1 ether}(poolId, ALICE_RENT);
-        vm.roll(block.number + hook.K() + 1);
-        hook.poke(poolId);
-        assertEq(hook.getLease(poolId).manager, alice);
+        _becomeManager(alice, ALICE_RENT);
 
-        vm.prank(bob);
-        hook.bid{value: 1 ether}(poolId, BOB_RENT);
+        _bid(bob, BOB_RENT, DEPOSIT);
         vm.roll(block.number + hook.K() + 1);
         hook.poke(poolId);
 
         assertEq(hook.getLease(poolId).manager, bob, "bob should displace alice");
-        assertGt(hook.withdrawable(alice), 0, "alice should be refunded remaining deposit");
+        assertGt(hook.withdrawable(poolId, alice), 0, "alice should be refunded");
     }
 
-    // ── rent accrual (the provable-economics core) ──
+    // ── rent accrual + distribution (the provable-economics core) ──
 
     function test_rentAccruesToPool() public {
-        vm.prank(alice);
-        hook.bid{value: 1 ether}(poolId, ALICE_RENT);
-        vm.roll(block.number + hook.K() + 1);
-        hook.poke(poolId); // alice becomes manager; accrued rent resets to 0 here
-
+        _becomeManager(alice, ALICE_RENT);
         assertEq(hook.getLease(poolId).accruedRent, 0);
 
-        uint256 blocksElapsed = 5;
-        vm.roll(block.number + blocksElapsed);
+        vm.roll(block.number + 5);
         hook.poke(poolId);
 
-        assertEq(hook.getLease(poolId).accruedRent, uint256(ALICE_RENT) * blocksElapsed, "rent miscounted");
+        assertEq(hook.getLease(poolId).accruedRent, uint256(ALICE_RENT) * 5, "rent miscounted");
+    }
+
+    function test_rentDonatedToLPs_onSwap() public {
+        _becomeManager(alice, ALICE_RENT);
+
+        vm.roll(block.number + 5);
+        _swap(); // beforeSwap charges 5 blocks of rent; afterSwap donates it to LPs
+
+        assertEq(hook.totalRentDonated(poolId), uint256(ALICE_RENT) * 5, "rent not donated");
+        assertEq(hook.getLease(poolId).accruedRent, 0, "accrued should be flushed");
+    }
+
+    /// @notice Conservation invariant: every unit of rent charged is either pending or donated to LPs.
+    function test_conservation_noRentLeaks() public {
+        _becomeManager(alice, ALICE_RENT);
+
+        vm.roll(block.number + 7);
+        _swap();
+
+        HarbergerAuction.Lease memory l = hook.getLease(poolId);
+        assertEq(l.totalRentCharged, hook.totalRentDonated(poolId) + l.accruedRent, "rent leaked");
+        assertGt(l.totalRentCharged, 0);
     }
 
     // ── manager fee control ──
 
     function test_managerSetsFee_andItApplies() public {
-        vm.prank(alice);
-        hook.bid{value: 1 ether}(poolId, ALICE_RENT);
-        vm.roll(block.number + hook.K() + 1);
-        hook.poke(poolId);
+        _becomeManager(alice, ALICE_RENT);
 
         uint24 newFee = 10_000; // 1%
         vm.prank(alice);
         hook.setFee(poolId, newFee);
 
         assertEq(hook.currentFee(poolId), newFee);
-        _swap(); // swap honoring the manager's fee must not revert
+        _swap();
     }
 
     function test_setFee_revertsAboveMax() public {
-        vm.prank(alice);
-        hook.bid{value: 1 ether}(poolId, ALICE_RENT);
-        vm.roll(block.number + hook.K() + 1);
-        hook.poke(poolId);
+        _becomeManager(alice, ALICE_RENT);
 
         uint24 tooHigh = hook.F_MAX() + 1;
         vm.prank(alice);
@@ -178,8 +194,12 @@ contract MaestroHookTest is BaseTest {
     }
 
     function test_bid_revertsIfDepositTooSmall() public {
-        vm.prank(alice);
+        MockERC20 token = MockERC20(Currency.unwrap(currency1));
+        token.mint(alice, DEPOSIT);
+        vm.startPrank(alice);
+        token.approve(address(hook), DEPOSIT);
         vm.expectRevert(HarbergerAuction.DepositTooSmall.selector);
-        hook.bid{value: 1}(poolId, ALICE_RENT);
+        hook.bid(poolKey, ALICE_RENT, 1);
+        vm.stopPrank();
     }
 }
