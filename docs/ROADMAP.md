@@ -15,7 +15,12 @@ am-AMM (unsolved in the paper) + an autonomous cross-chain manager via Reactive 
   - Rent/deposits switched from native ETH to the pool's **`currency1`** (ERC-20).
   - Rent distributed to LPs via the PoolManager's native **`donate()`** (pro-rata to in-range liquidity) — no custom share ledger; fully composable with v4 accounting. Settled with `CurrencySettler` from the hook's own balance.
   - Conservation invariant test: `totalRentCharged == totalRentDonated + accruedRent`. ✅ 9/9 tests passing.
-- [ ] **Phase 3 — Concentrated-liquidity extension (Novel #1).** `ConcentratedManager.sol`: manager-controlled active-tick concentration.
+- [x] **Phase 3 — Concentrated-liquidity extension (Novel #1).**
+  - MaestroHook is now a **hook-owned liquidity vault** (single-pool): LPs `deposit()`/`withdraw()` through the hook and hold shares of one aggregate position; external liquidity is blocked (`LiquidityOnlyViaHook`).
+  - The auction **manager** can `reposition(newLower, newUpper)` to concentrate the pool's liquidity around price (tick-aligned, must straddle current tick). Re-add auto-compounds removed tokens+fees into the new range.
+  - Rent now distributed to LP shareholders via a per-share accumulator in currency1 (`pendingRent`/`claimRent`), replacing donate().
+  - 11/11 tests passing incl. `test_manager_repositionsConcentratesLiquidity`, `test_rentAccruesToShareholders`, deposit/withdraw/swap/external-block.
+  - **Honest TODO (3b):** swap fees realized on liquidity modifications currently go to the hook and are not yet distributed to shareholders (rent IS). Concentration is a working approach, not a formal optimality proof (matches the pitch framing).
 - [ ] **Phase 4 — Reactive autonomous manager (Novel #2).** `MaestroManagerRSC.sol` + `ManagerCallback.sol`; cross-chain round trip drives the manager with no human.
 - [ ] **Phase 5 — Pyth + arbitrage capture.** Oracle feed; `LVRMath`; manager captures arb when pool is stale.
 - [ ] **Phase 6 — Frontend dashboard.** AuctionPanel, LPDashboard, ComparisonChart, EventFeed.
