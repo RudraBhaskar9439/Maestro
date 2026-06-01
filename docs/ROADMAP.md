@@ -21,7 +21,11 @@ am-AMM (unsolved in the paper) + an autonomous cross-chain manager via Reactive 
   - Rent now distributed to LP shareholders via a per-share accumulator in currency1 (`pendingRent`/`claimRent`), replacing donate().
   - 11/11 tests passing incl. `test_manager_repositionsConcentratesLiquidity`, `test_rentAccruesToShareholders`, deposit/withdraw/swap/external-block.
   - **Honest TODO (3b):** swap fees realized on liquidity modifications currently go to the hook and are not yet distributed to shareholders (rent IS). Concentration is a working approach, not a formal optimality proof (matches the pitch framing).
-- [ ] **Phase 4 — Reactive autonomous manager (Novel #2).** `MaestroManagerRSC.sol` + `ManagerCallback.sol`; cross-chain round trip drives the manager with no human.
+- [x] **Phase 4 — Reactive autonomous manager (Novel #2).**
+  - `packages/contracts/src/reactive/ManagerCallback.sol` (Unichain): an `AbstractCallback` that wins the auction (becomes manager) and exposes `repositionTo`/`updateFee`, callable only by the authorized Reactive callback proxy + bound RVM id. Drives `hook.reposition()` / `hook.setFee()`.
+  - `packages/reactive/src/MaestroManagerRSC.sol` (Reactive Network): `AbstractReactive` that subscribes to the PoolManager `Swap` event for the pool and, on each price move, emits a cross-chain `Callback` computing a fresh concentration band around the new tick. The trustless, sequencer-independent manager — not a keeper.
+  - 4/4 callback tests passing (callback-contract-is-manager, authorized-reposition, authorized-fee-update, unauthorized-reverts). 15/15 contract tests total.
+  - **Note:** the live cross-chain relay (RSC react → proxy → ManagerCallback) is exercised on Reactive testnet at deploy time (Phase 7); the Unichain-side wiring is unit-tested.
 - [ ] **Phase 5 — Pyth + arbitrage capture.** Oracle feed; `LVRMath`; manager captures arb when pool is stale.
 - [ ] **Phase 6 — Frontend dashboard.** AuctionPanel, LPDashboard, ComparisonChart, EventFeed.
 - [ ] **Phase 7 — Bots, demo, tests, pitch.** Scripted bidders + evil-arb bot; demo script; video; polish.
