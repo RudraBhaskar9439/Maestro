@@ -1,0 +1,3 @@
+[submodule "packages/reactive/lib/reactive-lib"]
+	path = packages/reactive/lib/reactive-lib
+	url = https://github.com/Reactive-Network/reactive-lib
