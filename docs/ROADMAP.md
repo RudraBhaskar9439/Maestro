@@ -31,7 +31,11 @@ am-AMM (unsolved in the paper) + an autonomous cross-chain manager via Reactive 
   - Hook reads Pyth (`setOracle`, `oracleTick()`); manager-gated `repositionToOracle(halfWidth)` concentrates liquidity around the TRUE (oracle) price — band spans current tick → oracle tick so it stays active and covers the arbitrage path. This neutralizes LVR by placing liquidity where the price actually is, instead of the stale pool tick.
   - `test/Oracle.t.sol` with MockPyth: 5/5 (price→tick at parity & moved, tracks-true-price reposition, manager-only, set-once). Full suite: 26/26.
   - **Framing/TODO:** Phase 5 implements LVR *mitigation* via oracle-aware placement (the functional, real approach). Explicit arb-swap profit capture by the manager is a documented alternative, not built.
-- [ ] **Phase 6 — Frontend dashboard.** AuctionPanel, LPDashboard, ComparisonChart, EventFeed.
+- [~] **Phase 6 — Frontend dashboard (functional skeleton).**
+  - Next 16 / React 19 / Tailwind v4 / wagmi v3 / viem. Dark, Voltaire-flavour dashboard.
+  - `src/lib/chain.ts` (Unichain Sepolia), `src/lib/wagmi.ts` (config + injected connector), `src/lib/maestro.ts` (live addresses + minimal ABI), `src/app/providers.tsx` (Wagmi + React Query).
+  - `src/app/page.tsx`: hero + live metric cards (fee, liquidity, shares, range, rent rate, total rent charged, accrued rent, oracle tick) + Auction panel + Reactive cross-chain panel + LP position panel. Reads the **live** Unichain hook (refetch every 8s).
+  - Builds clean (`pnpm build`). Action buttons (deposit/withdraw/claim/bid) are styled stubs for Vaibhav to wire to `writeContract`.
 - [~] **Phase 7 — Deploy + verify workflow (in progress).**
   - `test/EndToEnd.t.sol` — full product lifecycle in one test (deposit → auction → autonomous manager → swap → rent→LP → Pyth move → autonomous reposition → swap → claim → withdraw → conservation). ✅ passing. **Full suite: 27/27.**
   - **CRITICAL fix:** `MaestroHook` was 37,555 B (over the 24,576 EIP-170 limit) — would have failed on real testnet. Enabled `optimizer + optimizer_runs=100 + via_ir` in foundry.toml → **15,985 B** (deployable).
