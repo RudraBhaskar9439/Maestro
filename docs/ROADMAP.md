@@ -32,7 +32,12 @@ am-AMM (unsolved in the paper) + an autonomous cross-chain manager via Reactive 
   - `test/Oracle.t.sol` with MockPyth: 5/5 (price→tick at parity & moved, tracks-true-price reposition, manager-only, set-once). Full suite: 26/26.
   - **Framing/TODO:** Phase 5 implements LVR *mitigation* via oracle-aware placement (the functional, real approach). Explicit arb-swap profit capture by the manager is a documented alternative, not built.
 - [ ] **Phase 6 — Frontend dashboard.** AuctionPanel, LPDashboard, ComparisonChart, EventFeed.
-- [ ] **Phase 7 — Bots, demo, tests, pitch.** Scripted bidders + evil-arb bot; demo script; video; polish.
+- [~] **Phase 7 — Deploy + verify workflow (in progress).**
+  - `test/EndToEnd.t.sol` — full product lifecycle in one test (deposit → auction → autonomous manager → swap → rent→LP → Pyth move → autonomous reposition → swap → claim → withdraw → conservation). ✅ passing. **Full suite: 27/27.**
+  - **CRITICAL fix:** `MaestroHook` was 37,555 B (over the 24,576 EIP-170 limit) — would have failed on real testnet. Enabled `optimizer + optimizer_runs=100 + via_ir` in foundry.toml → **15,985 B** (deployable).
+  - Deployed the hook to a local anvil node successfully (deploy flow validated). Fixed `00_DeployHook.s.sol` (added BEFORE_INITIALIZE flag).
+  - **via_ir gotcha (tests):** the compiler caches `block.number` within a function frame; chained `vm.roll(block.number+N)` in one test fn uses a stale base. Use absolute roll targets (done in EndToEnd).
+  - TODO: consolidated `DeployMaestro` script (hook+pool+oracle+ManagerCallback), RSC deploy on Reactive testnet, `docs/DEPLOY.md` runbook, actual testnet broadcast (needs funded key/RPC — user runs), demo video.
 
 ## Phase 1 design notes / simplifications to revisit
 - Deposits & rent are in the pool's **`currency1`** (ERC-20); rent is donated to LPs via v4 `donate()`. Native-currency pools are rejected (`NativeCurrencyNotSupported`).
