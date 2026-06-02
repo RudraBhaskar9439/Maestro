@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useChainId, useSwitchChain, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useAccount, useSwitchChain, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { parseUnits, maxUint256 } from "viem";
 import { MAESTRO, maestroHookAbi, erc20Abi } from "../lib/maestro";
 import { unichainSepolia } from "../lib/chain";
@@ -12,7 +12,7 @@ export function LpActions({ shares }: { shares?: bigint }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
-  const chainId = useChainId();
+  const { chainId } = useAccount();
   const { switchChainAsync } = useSwitchChain();
   const { writeContractAsync, data: hash } = useWriteContract();
   const { isLoading: confirming, isSuccess } = useWaitForTransactionReceipt({ hash });

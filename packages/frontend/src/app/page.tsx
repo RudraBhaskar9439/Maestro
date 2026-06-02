@@ -1,6 +1,6 @@
 "use client";
 
-import { useAccount, useChainId, useConnect, useDisconnect, useReadContracts, useSwitchChain } from "wagmi";
+import { useAccount, useConnect, useDisconnect, useReadContracts, useSwitchChain } from "wagmi";
 import { formatUnits } from "viem";
 import { MAESTRO, maestroHookAbi } from "../lib/maestro";
 import { LpActions } from "../components/LpActions";
@@ -19,12 +19,16 @@ function fmt(v: bigint | undefined, decimals = 18, digits = 4) {
 const ZERO = "0x0000000000000000000000000000000000000000";
 
 export default function Dashboard() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, chainId } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
-  const chainId = useChainId();
   const { switchChain } = useSwitchChain();
   const wrongNetwork = isConnected && chainId !== unichainSepolia.id;
+
+  function goProvide() {
+    if (!isConnected) connect({ connector: connectors[0] });
+    document.getElementById("lp")?.scrollIntoView({ behavior: "smooth" });
+  }
 
   const { data, isLoading } = useReadContracts({
     contracts: [
@@ -68,10 +72,17 @@ export default function Dashboard() {
             <span className="text-[var(--accent)]">◆</span> MAESTRO
           </div>
           <nav className="hidden gap-6 text-sm text-[var(--muted)] md:flex">
-            <span className="text-[var(--text)]">Overview</span>
-            <span className="cursor-pointer hover:text-[var(--text)]">Pool</span>
-            <span className="cursor-pointer hover:text-[var(--text)]">Auction</span>
-            <span className="cursor-pointer hover:text-[var(--text)]">Docs</span>
+            <a href="#top" className="text-[var(--text)]">Overview</a>
+            <a href="#pool" className="hover:text-[var(--text)]">Pool</a>
+            <a href="#auction" className="hover:text-[var(--text)]">Auction</a>
+            <a
+              href="https://sepolia.uniscan.xyz/address/0x9d756CfA7a0eb3a83e1b6792037b6F950af5eac0"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-[var(--text)]"
+            >
+              Docs ↗
+            </a>
           </nav>
         </div>
         <div className="flex items-center gap-3 text-sm">
@@ -107,7 +118,7 @@ export default function Dashboard() {
 
       <main className="relative z-10 mx-auto max-w-6xl px-6 pb-24">
         {/* ── hero ── */}
-        <section className="py-16">
+        <section id="top" className="py-16">
           <p className="mb-3 text-sm text-[var(--accent)]">am-AMM · Uniswap v4 · Reactive</p>
           <h1 className="max-w-3xl text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
             The AMM where the manager is an{" "}
@@ -121,7 +132,10 @@ export default function Dashboard() {
             with no keeper.
           </p>
           <div className="mt-7 flex gap-3 text-sm">
-            <button className="rounded-md bg-[var(--accent)] px-4 py-2 font-medium text-black">
+            <button
+              onClick={goProvide}
+              className="rounded-md bg-[var(--accent)] px-4 py-2 font-medium text-black hover:opacity-90"
+            >
               Provide Liquidity
             </button>
             <a
@@ -136,7 +150,7 @@ export default function Dashboard() {
         </section>
 
         {/* ── live metrics ── */}
-        <div className="mb-3 flex items-center justify-between">
+        <div id="pool" className="mb-3 flex items-center justify-between">
           <h2 className="text-sm uppercase tracking-wider text-[var(--muted)]">Live Pool State</h2>
           <span className="mono text-xs text-[var(--muted)]">{isLoading ? "syncing…" : "● live"}</span>
         </div>
@@ -162,7 +176,7 @@ export default function Dashboard() {
         </section>
 
         {/* ── auction + relay ── */}
-        <section className="mt-6 grid gap-4 md:grid-cols-2">
+        <section id="auction" className="mt-6 grid gap-4 md:grid-cols-2">
           <Panel title="Harberger Auction">
             <Row k="Current Manager" v={hasManager ? short(lease!.manager) : "none"} mono />
             <Row k="Rent Rate (R)" v={`${fmt(lease?.rentRate)} /blk`} />
@@ -191,7 +205,7 @@ export default function Dashboard() {
         </section>
 
         {/* ── LP position ── */}
-        <section className="mt-6">
+        <section id="lp" className="mt-6 scroll-mt-6">
           <Panel title="Your LP Position">
             {isConnected ? (
               <div className="space-y-4">
