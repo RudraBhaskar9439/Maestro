@@ -8,6 +8,12 @@
   "lib/hookmate": {
     "rev": "33408fbc15e083eb0bc4205fa37cb6ba0a926f44"
   },
+  "lib/pyth-sdk-solidity": {
+    "tag": {
+      "name": "v2.2.0",
+      "rev": "11d6bcfc2e56885535a9a8e3c8417847cb20be14"
+    }
+  },
   "lib/reactive-lib": {
     "tag": {
       "name": "v0.2.0",

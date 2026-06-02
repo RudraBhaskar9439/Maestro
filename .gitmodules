@@ -4,3 +4,6 @@
 [submodule "packages/contracts/lib/reactive-lib"]
 	path = packages/contracts/lib/reactive-lib
 	url = https://github.com/Reactive-Network/reactive-lib
+[submodule "packages/contracts/lib/pyth-sdk-solidity"]
+	path = packages/contracts/lib/pyth-sdk-solidity
+	url = https://github.com/pyth-network/pyth-sdk-solidity

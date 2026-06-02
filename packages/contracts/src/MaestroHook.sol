@@ -18,8 +18,11 @@ import {TickMath} from "@uniswap/v4-core/src/libraries/TickMath.sol";
 import {LiquidityAmounts} from "@uniswap/v4-periphery/src/libraries/LiquidityAmounts.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {IPyth} from "@pythnetwork/pyth-sdk-solidity/IPyth.sol";
+import {PythStructs} from "@pythnetwork/pyth-sdk-solidity/PythStructs.sol";
 
 import {HarbergerAuction} from "./auction/HarbergerAuction.sol";
+import {OracleMath} from "./libraries/OracleMath.sol";
 
 /// @title MaestroHook
 /// @notice Auction-managed AMM for Uniswap v4 with hook-owned, manager-concentrated liquidity.
@@ -68,10 +71,17 @@ contract MaestroHook is BaseHook, HarbergerAuction, IUnlockCallback {
     uint256 public rentPerShare; // scaled by ACC_PRECISION
     mapping(address => uint256) public rentDebt;
 
+    // ── Pyth oracle (for LVR-aware concentration) ──
+    IPyth public pyth;
+    bytes32 public priceId;
+    uint256 public maxPriceAge;
+
     event Deposit(address indexed user, uint128 liquidity, uint256 shares);
     event Withdraw(address indexed user, uint128 liquidity, uint256 shares);
     event Repositioned(address indexed manager, int24 tickLower, int24 tickUpper, uint128 liquidity);
+    event RepositionedToOracle(int24 oracleTick, int24 tickLower, int24 tickUpper);
     event RentClaimed(address indexed user, uint256 amount);
+    event OracleSet(address pyth, bytes32 priceId, uint256 maxAge);
 
     error AlreadyInitialized();
     error NotInitialized();
@@ -79,6 +89,8 @@ contract MaestroHook is BaseHook, HarbergerAuction, IUnlockCallback {
     error InvalidRange();
     error NothingToReposition();
     error InsufficientShares();
+    error OracleNotSet();
+    error OracleAlreadySet();
 
     constructor(IPoolManager _poolManager) BaseHook(_poolManager) {}
 
@@ -189,6 +201,56 @@ contract MaestroHook is BaseHook, HarbergerAuction, IUnlockCallback {
         poolManager.unlock(abi.encode(CallbackData(Action.REPOSITION, msg.sender, 0, newLower, newUpper)));
 
         emit Repositioned(msg.sender, tickLower, tickUpper, positionLiquidity);
+    }
+
+    // ─────────────────────────────── ORACLE: LVR-aware concentration ───────────────────────────────
+
+    /// @notice One-time configuration of the Pyth price feed used for oracle-aware concentration.
+    function setOracle(IPyth _pyth, bytes32 _priceId, uint256 _maxAge) external {
+        if (address(pyth) != address(0)) revert OracleAlreadySet();
+        pyth = _pyth;
+        priceId = _priceId;
+        maxPriceAge = _maxAge;
+        emit OracleSet(address(_pyth), _priceId, _maxAge);
+    }
+
+    /// @notice The tick implied by the current Pyth price (the "true" market price).
+    function oracleTick() public view returns (int24) {
+        if (address(pyth) == address(0)) revert OracleNotSet();
+        PythStructs.Price memory p = pyth.getPriceNoOlderThan(priceId, maxPriceAge);
+        return OracleMath.priceToTick(p.price, p.expo);
+    }
+
+    /// @notice Manager concentrates liquidity around the TRUE (oracle) price, neutralizing LVR.
+    /// @dev    The band spans from the current pool tick to the oracle tick — so it stays active and
+    ///         covers the arbitrage path — padded by `halfWidth` (tick units) on each side.
+    function repositionToOracle(int24 halfWidth) external {
+        PoolId id = poolKey.toId();
+        _poke(id);
+        if (msg.sender != _leases[id].manager) revert NotManager();
+        if (positionLiquidity == 0) revert NothingToReposition();
+
+        int24 oTick = oracleTick();
+        (, int24 currentTick,,) = poolManager.getSlot0(id);
+        int24 spacing = poolKey.tickSpacing;
+
+        int24 lo = oTick < currentTick ? oTick : currentTick;
+        int24 hi = oTick > currentTick ? oTick : currentTick;
+        int24 newLower = _alignFloor(lo - halfWidth, spacing);
+        int24 newUpper = _alignCeil(hi + halfWidth, spacing);
+
+        poolManager.unlock(abi.encode(CallbackData(Action.REPOSITION, msg.sender, 0, newLower, newUpper)));
+        emit RepositionedToOracle(oTick, newLower, newUpper);
+    }
+
+    function _alignFloor(int24 tick, int24 spacing) private pure returns (int24 a) {
+        a = (tick / spacing) * spacing;
+        if (tick < 0 && a > tick) a -= spacing;
+    }
+
+    function _alignCeil(int24 tick, int24 spacing) private pure returns (int24 a) {
+        a = (tick / spacing) * spacing;
+        if (tick > 0 && a < tick) a += spacing;
     }
 
     // ──────────────────────────────────────── unlock callback ────────────────────────────────────────

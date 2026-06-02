@@ -26,7 +26,11 @@ am-AMM (unsolved in the paper) + an autonomous cross-chain manager via Reactive 
   - `packages/reactive/src/MaestroManagerRSC.sol` (Reactive Network): `AbstractReactive` that subscribes to the PoolManager `Swap` event for the pool and, on each price move, emits a cross-chain `Callback` computing a fresh concentration band around the new tick. The trustless, sequencer-independent manager — not a keeper.
   - 4/4 callback tests passing (callback-contract-is-manager, authorized-reposition, authorized-fee-update, unauthorized-reverts). 15/15 contract tests total.
   - **Note:** the live cross-chain relay (RSC react → proxy → ManagerCallback) is exercised on Reactive testnet at deploy time (Phase 7); the Unichain-side wiring is unit-tested.
-- [ ] **Phase 5 — Pyth + arbitrage capture.** Oracle feed; `LVRMath`; manager captures arb when pool is stale.
+- [x] **Phase 5 — Pyth oracle + LVR-aware concentration.**
+  - `src/libraries/OracleMath.sol`: converts a Pyth price → Uniswap sqrtPriceX96 / tick.
+  - Hook reads Pyth (`setOracle`, `oracleTick()`); manager-gated `repositionToOracle(halfWidth)` concentrates liquidity around the TRUE (oracle) price — band spans current tick → oracle tick so it stays active and covers the arbitrage path. This neutralizes LVR by placing liquidity where the price actually is, instead of the stale pool tick.
+  - `test/Oracle.t.sol` with MockPyth: 5/5 (price→tick at parity & moved, tracks-true-price reposition, manager-only, set-once). Full suite: 26/26.
+  - **Framing/TODO:** Phase 5 implements LVR *mitigation* via oracle-aware placement (the functional, real approach). Explicit arb-swap profit capture by the manager is a documented alternative, not built.
 - [ ] **Phase 6 — Frontend dashboard.** AuctionPanel, LPDashboard, ComparisonChart, EventFeed.
 - [ ] **Phase 7 — Bots, demo, tests, pitch.** Scripted bidders + evil-arb bot; demo script; video; polish.
 
