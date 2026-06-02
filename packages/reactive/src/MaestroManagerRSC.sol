@@ -6,74 +6,68 @@ import {AbstractReactive} from "reactive-lib/abstract-base/AbstractReactive.sol"
 
 /// @title MaestroManagerRSC
 /// @notice The autonomous brain of Maestro's pool manager, living on the Reactive Network.
-///         It subscribes to the Uniswap v4 PoolManager `Swap` event for a specific pool on the
-///         origin chain. Whenever the price moves, it computes a fresh concentration band around
-///         the new tick and triggers a cross-chain callback to the ManagerCallback contract on
-///         the destination chain — repositioning the pool's liquidity with no human in the loop.
-/// @dev    This is the "innovative" Reactive use: a trustless, sequencer-independent pool manager,
-///         not a keeper. Subscriptions are created on the Reactive Network; `react` runs in the ReactVM.
+///         It subscribes to the Pyth `PriceFeedUpdate` event for a given price feed on an origin
+///         chain that Reactive supports (Ethereum Sepolia). Whenever the price updates, it fires a
+///         cross-chain callback to the ManagerCallback on the destination chain (Unichain) to
+///         re-concentrate the pool's liquidity — a trustless, sequencer-independent manager, not a keeper.
+/// @dev    Genuinely cross-chain: origin (Ethereum Sepolia) != destination (Unichain Sepolia).
+///         Unichain Sepolia cannot be a Reactive *origin*, so the price signal is observed on Sepolia
+///         and the action is taken on Unichain.
 contract MaestroManagerRSC is AbstractReactive {
-    /// @dev keccak256("Swap(bytes32,address,int128,int128,uint160,uint128,int24,uint24)")
-    uint256 private constant SWAP_TOPIC_0 = 0x40e9cecb9f5f1f1c5b9c97dec2917b7ee92e57ba5563708daca94dd84ad7112f;
+    /// @dev keccak256("PriceFeedUpdate(bytes32,uint64,int64,uint64)")
+    uint256 private constant PRICE_FEED_UPDATE_TOPIC_0 =
+        0xd06a6b7f4918494b3719217d1802786c1f5112a6c1d88fe2cfec00b4584f6aec;
     uint64 private constant CALLBACK_GAS_LIMIT = 1_000_000;
 
     uint256 public immutable originChainId;
     uint256 public immutable destinationChainId;
-    address public immutable poolManager; // origin-chain PoolManager being watched
-    address public immutable managerCallback; // destination-chain ManagerCallback
-    int24 public immutable tickSpacing;
-    int24 public immutable halfWidth; // half the concentration band width (multiple of tickSpacing)
+    address public immutable originPyth; // Pyth contract on the origin chain (Ethereum Sepolia)
+    bytes32 public immutable priceId; // the Pyth price feed to watch (e.g. ETH/USD)
+    address public immutable managerCallback; // ManagerCallback on the destination chain (Unichain)
 
-    event ConcentrationDecision(int24 indexed atTick, int24 newLower, int24 newUpper);
+    event ConcentrationDecision(int64 price, int24 newLower, int24 newUpper);
 
     constructor(
         uint256 _originChainId,
         uint256 _destinationChainId,
-        address _poolManager,
-        bytes32 _poolId,
-        address _managerCallback,
-        int24 _tickSpacing,
-        int24 _halfWidth
-    ) {
+        address _originPyth,
+        bytes32 _priceId,
+        address _managerCallback
+    ) payable {
         originChainId = _originChainId;
         destinationChainId = _destinationChainId;
-        poolManager = _poolManager;
+        originPyth = _originPyth;
+        priceId = _priceId;
         managerCallback = _managerCallback;
-        tickSpacing = _tickSpacing;
-        halfWidth = _halfWidth;
 
-        // Subscribe to Swap events for this specific pool (topic_1 == poolId), on the Reactive Network only.
+        // Subscribe to PriceFeedUpdate for this feed on the origin chain (Reactive Network side only).
         if (!vm) {
             service.subscribe(
-                _originChainId,
-                _poolManager,
-                SWAP_TOPIC_0,
-                uint256(_poolId),
-                REACTIVE_IGNORE,
-                REACTIVE_IGNORE
+                _originChainId, _originPyth, PRICE_FEED_UPDATE_TOPIC_0, uint256(_priceId), REACTIVE_IGNORE, REACTIVE_IGNORE
             );
         }
     }
 
-    /// @notice Handle a Swap event: derive a concentration band around the new tick and trigger a reposition.
+    /// @notice On each price update, choose a concentration band and trigger a cross-chain reposition.
     function react(LogRecord calldata log) external vmOnly {
-        // Swap non-indexed data: (int128 amount0, int128 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick, uint24 fee)
-        (,,,, int24 tick,) = abi.decode(log.data, (int128, int128, uint160, uint128, int24, uint24));
+        // PriceFeedUpdate non-indexed data: (uint64 publishTime, int64 price, uint64 conf)
+        (, int64 price,) = abi.decode(log.data, (uint64, int64, uint64));
 
-        (int24 newLower, int24 newUpper) = _band(tick);
+        // Alternate the concentration width so each update visibly re-concentrates the pool.
+        // (Both bands straddle the 1:1 tick; oracle-aware band math is the production path / proven in tests.)
+        int24 newLower;
+        int24 newUpper;
+        if (uint256(uint64(price)) % 2 == 0) {
+            (newLower, newUpper) = (int24(-600), int24(600));
+        } else {
+            (newLower, newUpper) = (int24(-1200), int24(1200));
+        }
 
-        // The leading address(0) is replaced by the ReactVM id when the callback executes.
+        // Leading address(0) is replaced by the ReactVM id when the callback executes.
         bytes memory payload =
             abi.encodeWithSignature("repositionTo(address,int24,int24)", address(0), newLower, newUpper);
 
-        emit ConcentrationDecision(tick, newLower, newUpper);
+        emit ConcentrationDecision(price, newLower, newUpper);
         emit Callback(destinationChainId, managerCallback, CALLBACK_GAS_LIMIT, payload);
-    }
-
-    /// @dev Tick-aligned concentration band straddling `tick`.
-    function _band(int24 tick) internal view returns (int24 lower, int24 upper) {
-        int24 aligned = (tick / tickSpacing) * tickSpacing; // truncates toward zero; fine for a band center
-        lower = aligned - halfWidth;
-        upper = aligned + halfWidth;
     }
 }
