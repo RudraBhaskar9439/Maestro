@@ -1,9 +1,10 @@
 "use client";
 
-import { useAccount, useConnect, useDisconnect, useReadContracts } from "wagmi";
+import { useAccount, useChainId, useConnect, useDisconnect, useReadContracts, useSwitchChain } from "wagmi";
 import { formatUnits } from "viem";
 import { MAESTRO, maestroHookAbi } from "../lib/maestro";
 import { LpActions } from "../components/LpActions";
+import { unichainSepolia } from "../lib/chain";
 
 const hook = { address: MAESTRO.hook, abi: maestroHookAbi } as const;
 
@@ -21,6 +22,9 @@ export default function Dashboard() {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
+  const chainId = useChainId();
+  const { switchChain } = useSwitchChain();
+  const wrongNetwork = isConnected && chainId !== unichainSepolia.id;
 
   const { data, isLoading } = useReadContracts({
     contracts: [
@@ -71,9 +75,18 @@ export default function Dashboard() {
           </nav>
         </div>
         <div className="flex items-center gap-3 text-sm">
-          <span className="hidden items-center gap-2 rounded-full border border-[#232329] bg-[#101013] px-3 py-1.5 text-[var(--muted)] sm:flex">
-            <span className="live-dot h-1.5 w-1.5 rounded-full bg-[var(--positive)]" /> Unichain Sepolia
-          </span>
+          {wrongNetwork ? (
+            <button
+              onClick={() => switchChain({ chainId: unichainSepolia.id })}
+              className="flex items-center gap-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-3 py-1.5 text-amber-300"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-400" /> Wrong network · Switch
+            </button>
+          ) : (
+            <span className="hidden items-center gap-2 rounded-full border border-[#232329] bg-[#101013] px-3 py-1.5 text-[var(--muted)] sm:flex">
+              <span className="live-dot h-1.5 w-1.5 rounded-full bg-[var(--positive)]" /> Unichain Sepolia
+            </span>
+          )}
           {isConnected ? (
             <button
               onClick={() => disconnect()}
