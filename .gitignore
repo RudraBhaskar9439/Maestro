@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+
+# foundry build output
+out/
+cache/
+broadcast/
+.forge-snapshots/
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# next.js
+packages/frontend/.next/
+packages/frontend/out/
+
+# misc
+.DS_Store
+*.log
