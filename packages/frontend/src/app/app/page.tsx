@@ -77,7 +77,7 @@ export default function Dashboard() {
     <div className="relative min-h-screen">
       <div className="grid-bg pointer-events-none absolute inset-0 h-[320px]" />
 
-      <header className="relative z-10 flex items-center justify-between border-b border-[#232329] px-6 py-4">
+      <header className="relative z-10 flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 text-[15px] font-semibold tracking-tight">
             <span className="text-[var(--accent)]">◆</span> MAESTRO
@@ -97,14 +97,14 @@ export default function Dashboard() {
               <span className="h-1.5 w-1.5 rounded-full bg-amber-400" /> Wrong network · Switch
             </button>
           ) : (
-            <span className="hidden items-center gap-2 rounded-full border border-[#232329] bg-[#101013] px-3 py-1.5 text-[var(--muted)] sm:flex">
+            <span className="hidden items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--panel)] px-3 py-1.5 text-[var(--muted)] sm:flex">
               <span className="live-dot h-1.5 w-1.5 rounded-full bg-[var(--positive)]" /> Unichain Sepolia
             </span>
           )}
           {connected ? (
             <button
               onClick={() => disconnect()}
-              className="mono rounded-md border border-[#232329] bg-[#16161b] px-3 py-1.5 hover:border-[var(--accent)]"
+              className="mono rounded-md border border-[var(--border)] bg-[var(--panel-2)] px-3 py-1.5 hover:border-[var(--accent)]"
             >
               {short(address)}
             </button>
@@ -189,7 +189,7 @@ export default function Dashboard() {
           </Panel>
         </section>
 
-        <footer className="mt-12 border-t border-[#232329] pt-6 text-xs text-[var(--muted)]">
+        <footer className="mt-12 border-t border-[var(--border)] pt-6 text-xs text-[var(--muted)]">
           <div className="mono flex flex-wrap gap-x-8 gap-y-1">
             <span>hook {short(MAESTRO.hook)}</span>
             <span>manager-callback {short(MAESTRO.managerCallback)}</span>

@@ -101,13 +101,13 @@ export function LpActions({ shares }: { shares?: bigint }) {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           inputMode="decimal"
-          className="mono w-28 rounded-md border border-[#232329] bg-[#0c0c0f] px-3 py-1.5 text-sm outline-none focus:border-[var(--accent)]"
+          className="mono w-28 rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-1.5 text-sm outline-none focus:border-[var(--accent)]"
           placeholder="amount"
         />
         <button
           onClick={deposit}
           disabled={!!busy}
-          className="rounded-md border border-[#232329] bg-[#16161b] px-3 py-1.5 text-sm hover:border-[var(--accent)] disabled:opacity-50"
+          className="rounded-md border border-[var(--border)] bg-[var(--panel-2)] px-3 py-1.5 text-sm hover:border-[var(--accent)] disabled:opacity-50"
         >
           Deposit
         </button>
@@ -115,7 +115,7 @@ export function LpActions({ shares }: { shares?: bigint }) {
       <button
         onClick={withdrawAll}
         disabled={!!busy}
-        className="rounded-md border border-[#232329] bg-[#16161b] px-3 py-1.5 text-sm hover:border-[var(--accent)] disabled:opacity-50"
+        className="rounded-md border border-[var(--border)] bg-[var(--panel-2)] px-3 py-1.5 text-sm hover:border-[var(--accent)] disabled:opacity-50"
       >
         Withdraw all
       </button>

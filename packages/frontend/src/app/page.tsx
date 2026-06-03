@@ -7,38 +7,64 @@ export default function Landing() {
       <SiteHeader />
 
       {/* ── hero ── */}
-      <section className="relative overflow-hidden border-b border-[#232329]">
+      <section className="relative overflow-hidden border-b border-[var(--border)]">
+        <div className="aurora" />
         <div className="grid-bg pointer-events-none absolute inset-0" />
-        <div className="relative mx-auto max-w-6xl px-6 py-28 text-center">
-          <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-[#232329] bg-[#101013] px-3 py-1 text-xs text-[var(--muted)]">
+        <div className="relative mx-auto max-w-6xl px-6 py-32 text-center">
+          <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--panel)]/70 px-3.5 py-1.5 text-xs text-[var(--muted)] backdrop-blur">
             <span className="live-dot h-1.5 w-1.5 rounded-full bg-[var(--positive)]" />
             Live on Unichain Sepolia + Reactive Lasna
           </div>
-          <h1 className="mx-auto max-w-4xl text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
-            The AMM where the manager is an{" "}
-            <span className="gradient-text">autonomous cross-chain agent</span>.
+          <h1 className="mx-auto max-w-4xl text-5xl font-bold leading-[1.02] tracking-tight md:text-7xl">
+            Liquidity that <span className="gradient-text">manages itself</span> — across chains.
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-[var(--muted)]">
+          <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
             Maestro is an auction-managed AMM on Uniswap v4. A continuous auction sells the right to
-            manage the pool; the manager concentrates liquidity and pays rent to LPs — and that
-            manager is a Reactive Smart Contract running across chains, with no keeper.
+            manage the pool; the manager concentrates liquidity and pays{" "}
+            <span className="text-[var(--text)]">rent that flows to LPs</span> — and that manager is a
+            Reactive Smart Contract running across chains, with no keeper.
           </p>
-          <div className="mt-9 flex justify-center gap-3">
+          <div className="mt-10 flex flex-wrap justify-center gap-3">
             <Link
               href="/app"
-              className="glow rounded-md bg-[var(--accent)] px-5 py-2.5 text-sm font-medium text-black hover:opacity-90"
+              className="glow rounded-lg bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-black hover:opacity-90"
             >
               Launch App →
             </Link>
             <Link
               href="/docs"
-              className="rounded-md border border-[#232329] bg-[#101013] px-5 py-2.5 text-sm hover:border-[var(--accent)]"
+              className="rounded-lg border border-[var(--border)] bg-[var(--panel)]/70 px-6 py-3 text-sm backdrop-blur hover:border-[var(--accent)]"
             >
               Read the Docs
             </Link>
           </div>
         </div>
       </section>
+
+      {/* ── marquee ── */}
+      <div className="overflow-hidden border-b border-[var(--border)] bg-[var(--panel)]/40 py-3">
+        <div className="marquee-track text-sm font-medium tracking-wide text-[var(--muted)]">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <span key={i} className="flex shrink-0">
+              {[
+                "AUCTION-MANAGED",
+                "LVR RECAPTURE",
+                "RENT → LPs",
+                "CONCENTRATED LIQUIDITY",
+                "AUTONOMOUS MANAGER",
+                "CROSS-CHAIN · REACTIVE",
+                "UNISWAP v4",
+                "PYTH ORACLE",
+              ].map((t) => (
+                <span key={t} className="flex items-center">
+                  <span className="px-6">{t}</span>
+                  <span className="text-[var(--accent)]">◆</span>
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
+      </div>
 
       {/* ── the problem ── */}
       <section className="mx-auto max-w-6xl px-6 py-20">

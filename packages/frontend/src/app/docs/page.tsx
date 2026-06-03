@@ -28,7 +28,7 @@ export default function Docs() {
           <nav className="sticky top-24 space-y-1 text-sm">
             <div className="mb-3 text-xs uppercase tracking-wider text-[var(--muted)]">Documentation</div>
             {sections.map(([id, label]) => (
-              <a key={id} href={`#${id}`} className="block rounded px-2 py-1.5 text-[var(--muted)] hover:bg-[#101013] hover:text-[var(--text)]">
+              <a key={id} href={`#${id}`} className="block rounded px-2 py-1.5 text-[var(--muted)] hover:bg-[var(--panel)] hover:text-[var(--text)]">
                 {label}
               </a>
             ))}
@@ -105,7 +105,7 @@ export default function Docs() {
           </Section>
 
           <Section id="architecture" title="Architecture">
-            <pre className="mono overflow-x-auto rounded-lg border border-[#232329] bg-[#0c0c0f] p-4 text-xs text-[var(--text)]">{`Pyth (Eth Sepolia)                 Reactive Lasna
+            <pre className="mono overflow-x-auto rounded-lg border border-[var(--border)] bg-[var(--input)] p-4 text-xs text-[var(--text)]">{`Pyth (Eth Sepolia)                 Reactive Lasna
    │ PriceFeedUpdate                ┌───────────────────┐
    └──────────────────────────────▶│ MaestroManagerRSC │
                                     │   react → Callback│
@@ -161,5 +161,5 @@ function Section({ id, title, children }: { id: string; title: string; children:
 }
 
 function Mono({ children }: { children: React.ReactNode }) {
-  return <code className="mono rounded bg-[#16161b] px-1.5 py-0.5 text-[13px] text-[var(--text)]">{children}</code>;
+  return <code className="mono rounded bg-[var(--panel-2)] px-1.5 py-0.5 text-[13px] text-[var(--text)]">{children}</code>;
 }

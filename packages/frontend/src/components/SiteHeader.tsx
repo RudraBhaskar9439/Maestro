@@ -3,7 +3,7 @@ import Link from "next/link";
 /** Marketing-site header used on the landing + docs pages. */
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-30 border-b border-[#232329] bg-[#08080a]/80 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-[var(--border)] bg-[rgba(7,11,22,0.72)] backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2 text-[15px] font-semibold tracking-tight">
           <span className="text-[var(--accent)]">◆</span> MAESTRO
@@ -26,7 +26,7 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-[#232329] px-6 py-10 text-xs text-[var(--muted)]">
+    <footer className="border-t border-[var(--border)] px-6 py-10 text-xs text-[var(--muted)]">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-2 text-[var(--text)]">
           <span className="text-[var(--accent)]">◆</span> Maestro
