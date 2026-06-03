@@ -13,10 +13,21 @@ const hook = { address: MAESTRO.hook, abi: maestroHookAbi } as const;
 function short(a?: string) {
   return a ? `${a.slice(0, 6)}…${a.slice(-4)}` : "—";
 }
-function fmt(v: bigint | undefined, decimals = 18, digits = 4) {
+// Large liquidity/share magnitudes (1e18-scaled), shown compact: 10.83K, 220, 1.2M…
+function fmtUnits(v: bigint | undefined) {
   if (v === undefined) return "—";
-  const n = Number(formatUnits(v, decimals));
-  return n.toLocaleString(undefined, { maximumFractionDigits: digits });
+  const n = Number(formatUnits(v, 18));
+  if (n === 0) return "0";
+  if (n >= 1000) return n.toLocaleString(undefined, { notation: "compact", maximumFractionDigits: 2 });
+  return n.toLocaleString(undefined, { maximumFractionDigits: 2 });
+}
+// Token amounts (currency1), with small-value precision.
+function fmtToken(v: bigint | undefined) {
+  if (v === undefined) return "—";
+  const n = Number(formatUnits(v, 18));
+  if (n === 0) return "0";
+  if (n < 0.0001) return n.toExponential(2);
+  return n.toLocaleString(undefined, { maximumFractionDigits: 6 });
 }
 const ZERO = "0x0000000000000000000000000000000000000000";
 
@@ -115,17 +126,17 @@ export default function Dashboard() {
         </div>
         <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
           <Stat label="Swap Fee" value={`${feePct}%`} sub={hasManager ? "set by manager" : "default"} />
-          <Stat label="Position Liquidity" value={fmt(liquidity, 0, 0)} sub="hook-owned vault" />
-          <Stat label="Total LP Shares" value={fmt(totalShares, 0, 0)} />
+          <Stat label="Position Liquidity" value={fmtUnits(liquidity)} sub="hook-owned vault" />
+          <Stat label="Total LP Shares" value={fmtUnits(totalShares)} />
           <Stat
             label="Active Range"
             value={tickLower !== undefined ? `${tickLower} ↔ ${tickUpper}` : "—"}
             sub="tick band"
             mono
           />
-          <Stat label="Manager Rent / blk" value={fmt(lease?.rentRate)} sub="currency1" />
-          <Stat label="Rent Charged (total)" value={fmt(lease?.totalRentCharged)} sub="→ to LPs" accent />
-          <Stat label="Accrued Rent" value={fmt(lease?.accruedRent)} sub="pending distribution" />
+          <Stat label="Manager Rent / blk" value={fmtToken(lease?.rentRate)} sub="currency1" />
+          <Stat label="Rent Charged (total)" value={fmtToken(lease?.totalRentCharged)} sub="→ to LPs" accent />
+          <Stat label="Accrued Rent" value={fmtToken(lease?.accruedRent)} sub="pending distribution" />
           <Stat
             label="Oracle Tick (Pyth)"
             value={oracleOk ? String(oracleTick) : "stale"}
@@ -137,8 +148,8 @@ export default function Dashboard() {
         <section id="auction" className="mt-6 grid gap-4 md:grid-cols-2">
           <Panel title="Harberger Auction">
             <Row k="Current Manager" v={hasManager ? short(lease!.manager) : "none"} mono />
-            <Row k="Rent Rate (R)" v={`${fmt(lease?.rentRate)} /blk`} />
-            <Row k="Manager Deposit" v={fmt(lease?.deposit)} />
+            <Row k="Rent Rate (R)" v={`${fmtToken(lease?.rentRate)} /blk`} />
+            <Row k="Manager Deposit" v={fmtToken(lease?.deposit)} />
             <p className="mt-4 text-xs leading-relaxed text-[var(--muted)]">
               Anyone can outbid the manager by posting a higher per-block rent; the new bid activates
               after a <span className="text-[var(--text)]">K-block delay</span> (censorship resistance).
@@ -167,8 +178,8 @@ export default function Dashboard() {
             {connected ? (
               <div className="space-y-4">
                 <div className="flex flex-wrap gap-x-10 gap-y-2">
-                  <Row k="Your Shares" v={fmt(myShares, 0, 0)} />
-                  <Row k="Claimable Rent" v={`${fmt(myPending)} currency1`} accent />
+                  <Row k="Your Shares" v={fmtUnits(myShares)} />
+                  <Row k="Claimable Rent" v={`${fmtToken(myPending)} currency1`} accent />
                 </div>
                 <LpActions shares={myShares} />
               </div>
@@ -204,12 +215,15 @@ function Stat({
   mono?: boolean;
 }) {
   return (
-    <div className="card p-4">
+    <div className="card flex min-h-[92px] flex-col p-4">
       <div className="text-xs text-[var(--muted)]">{label}</div>
-      <div className={`mt-2 text-xl ${mono ? "mono" : "font-semibold"} ${accent ? "text-[var(--accent)]" : ""}`}>
+      <div
+        title={value}
+        className={`mt-2 truncate text-xl ${mono ? "mono" : "font-semibold"} ${accent ? "text-[var(--accent)]" : ""}`}
+      >
         {value}
       </div>
-      {sub && <div className="mt-1 text-[11px] text-[var(--muted)]">{sub}</div>}
+      {sub && <div className="mt-auto pt-1 text-[11px] text-[var(--muted)]">{sub}</div>}
     </div>
   );
 }
