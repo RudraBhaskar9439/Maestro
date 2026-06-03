@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useAccount, useConnect, useDisconnect, useReadContracts, useSwitchChain } from "wagmi";
 import { formatUnits } from "viem";
 import { MAESTRO, maestroHookAbi } from "../lib/maestro";
@@ -23,10 +24,15 @@ export default function Dashboard() {
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
   const { switchChain } = useSwitchChain();
-  const wrongNetwork = isConnected && chainId !== unichainSepolia.id;
+
+  // Avoid SSR/client hydration mismatch: wallet state is only known after mount.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const connected = mounted && isConnected;
+  const wrongNetwork = connected && chainId !== unichainSepolia.id;
 
   function goProvide() {
-    if (!isConnected) connect({ connector: connectors[0] });
+    if (!connected) connect({ connector: connectors[0] });
     document.getElementById("lp")?.scrollIntoView({ behavior: "smooth" });
   }
 
@@ -98,7 +104,7 @@ export default function Dashboard() {
               <span className="live-dot h-1.5 w-1.5 rounded-full bg-[var(--positive)]" /> Unichain Sepolia
             </span>
           )}
-          {isConnected ? (
+          {connected ? (
             <button
               onClick={() => disconnect()}
               className="mono rounded-md border border-[#232329] bg-[#16161b] px-3 py-1.5 hover:border-[var(--accent)]"
@@ -207,7 +213,7 @@ export default function Dashboard() {
         {/* ── LP position ── */}
         <section id="lp" className="mt-6 scroll-mt-6">
           <Panel title="Your LP Position">
-            {isConnected ? (
+            {connected ? (
               <div className="space-y-4">
                 <div className="flex flex-wrap gap-x-10 gap-y-2">
                   <Row k="Your Shares" v={fmt(myShares, 0, 0)} />
