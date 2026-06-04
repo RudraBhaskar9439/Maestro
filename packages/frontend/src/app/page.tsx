@@ -8,7 +8,6 @@ export default function Landing() {
 
       {/* ── hero ── */}
       <section className="relative overflow-hidden border-b border-[var(--border)]">
-        <div className="aurora" />
         <div className="grid-bg pointer-events-none absolute inset-0" />
         <div className="relative mx-auto max-w-6xl px-6 py-32 text-center">
           <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--panel)]/70 px-3.5 py-1.5 text-xs text-[var(--muted)] backdrop-blur">
@@ -47,14 +46,13 @@ export default function Landing() {
           {Array.from({ length: 2 }).map((_, i) => (
             <span key={i} className="flex shrink-0">
               {[
-                "AUCTION-MANAGED",
-                "LVR RECAPTURE",
-                "RENT → LPs",
-                "CONCENTRATED LIQUIDITY",
-                "AUTONOMOUS MANAGER",
-                "CROSS-CHAIN · REACTIVE",
-                "UNISWAP v4",
-                "PYTH ORACLE",
+                "Turn impermanent loss into LP income",
+                "The arbitrageur now works for the LPs",
+                "Rent flows to LPs — every block",
+                "No keepers. No bots. Just contracts.",
+                "Liquidity that follows the price",
+                "Recapture the value pools leak",
+                "An auction manager that runs across chains",
               ].map((t) => (
                 <span key={t} className="flex items-center">
                   <span className="px-6">{t}</span>

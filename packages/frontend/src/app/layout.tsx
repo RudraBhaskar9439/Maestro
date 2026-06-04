@@ -14,6 +14,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full">
+        <div className="aurora-bg" aria-hidden>
+          <span className="b1" />
+          <span className="b2" />
+          <span className="b3" />
+        </div>
         <Providers>{children}</Providers>
       </body>
     </html>
