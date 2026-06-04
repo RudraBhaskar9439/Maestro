@@ -8,6 +8,7 @@ import { MAESTRO, maestroHookAbi } from "../../lib/maestro";
 import { LpActions } from "../../components/LpActions";
 import { ConcentrationChart } from "../../components/ConcentrationChart";
 import { LiveRent } from "../../components/LiveRent";
+import { ActivityFeed } from "../../components/ActivityFeed";
 import { unichainSepolia } from "../../lib/chain";
 
 const hook = { address: MAESTRO.hook, abi: maestroHookAbi } as const;
@@ -207,6 +208,12 @@ export default function Dashboard() {
               </span>
               .
             </p>
+          </Panel>
+        </section>
+
+        <section className="mt-6">
+          <Panel title="Recent Activity">
+            <ActivityFeed />
           </Panel>
         </section>
 

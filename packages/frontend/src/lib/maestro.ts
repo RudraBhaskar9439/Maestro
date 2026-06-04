@@ -102,4 +102,50 @@ export const maestroHookAbi = [
       { name: "liquidity", type: "uint128", indexed: false },
     ],
   },
+  {
+    type: "event",
+    name: "Deposit",
+    inputs: [
+      { name: "user", type: "address", indexed: true },
+      { name: "liquidity", type: "uint128", indexed: false },
+      { name: "shares", type: "uint256", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "Withdraw",
+    inputs: [
+      { name: "user", type: "address", indexed: true },
+      { name: "liquidity", type: "uint128", indexed: false },
+      { name: "shares", type: "uint256", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "BidPlaced",
+    inputs: [
+      { name: "id", type: "bytes32", indexed: true },
+      { name: "bidder", type: "address", indexed: true },
+      { name: "rentRate", type: "uint128", indexed: false },
+      { name: "activeBlock", type: "uint64", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "ManagerChanged",
+    inputs: [
+      { name: "id", type: "bytes32", indexed: true },
+      { name: "oldManager", type: "address", indexed: true },
+      { name: "newManager", type: "address", indexed: true },
+      { name: "rentRate", type: "uint128", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "RentClaimed",
+    inputs: [
+      { name: "user", type: "address", indexed: true },
+      { name: "amount", type: "uint256", indexed: false },
+    ],
+  },
 ] as const;
