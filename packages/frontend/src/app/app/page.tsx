@@ -7,6 +7,7 @@ import { formatUnits } from "viem";
 import { MAESTRO, maestroHookAbi } from "../../lib/maestro";
 import { LpActions } from "../../components/LpActions";
 import { ConcentrationChart } from "../../components/ConcentrationChart";
+import { LiveRent } from "../../components/LiveRent";
 import { unichainSepolia } from "../../lib/chain";
 
 const hook = { address: MAESTRO.hook, abi: maestroHookAbi } as const;
@@ -153,7 +154,13 @@ export default function Dashboard() {
             mono
           />
           <Stat label="Manager Rent / blk" value={fmtToken(lease?.rentRate)} sub="currency1" />
-          <Stat label="Rent → LPs (live)" value={fmtToken(liveRent)} sub="accruing every block" accent />
+          <Stat
+            label="Rent → LPs (live)"
+            value={hasManager ? <LiveRent base={liveRent} ratePerBlock={lease?.rentRate} /> : fmtToken(liveRent)}
+            sub="accruing every block"
+            accent
+            mono
+          />
           <Stat label="Accrued Rent" value={fmtToken(lease?.accruedRent)} sub="pending distribution" />
           <Stat
             label="Oracle Tick (Pyth)"
@@ -239,7 +246,7 @@ function Stat({
   mono,
 }: {
   label: string;
-  value: string;
+  value: React.ReactNode;
   sub?: string;
   accent?: boolean;
   mono?: boolean;
@@ -248,7 +255,7 @@ function Stat({
     <div className="card flex min-h-[92px] flex-col p-4">
       <div className="text-xs text-[var(--muted)]">{label}</div>
       <div
-        title={value}
+        title={typeof value === "string" ? value : undefined}
         className={`mt-2 truncate text-xl ${mono ? "mono" : "font-semibold"} ${accent ? "text-[var(--accent)]" : ""}`}
       >
         {value}

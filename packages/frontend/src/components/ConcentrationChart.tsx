@@ -16,7 +16,7 @@ export function ConcentrationChart({ lower, upper }: { lower?: number; upper?: n
   return (
     <div className="h-44 w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 8 }}>
+        <AreaChart data={data} margin={{ top: 24, right: 12, bottom: 0, left: 12 }}>
           <defs>
             <linearGradient id="liqFill" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#22d3ee" stopOpacity={0.55} />
@@ -31,7 +31,12 @@ export function ConcentrationChart({ lower, upper }: { lower?: number; upper?: n
             ticks={[-span, lo, 0, hi, span]}
           />
           <YAxis hide domain={[0, 1.1]} />
-          <ReferenceLine x={0} stroke="#6d4bff" strokeDasharray="4 3" label={{ value: "price", fill: "#8b97b8", fontSize: 10, position: "top" }} />
+          <ReferenceLine
+            x={0}
+            stroke="#6d4bff"
+            strokeDasharray="4 3"
+            label={{ value: "price", fill: "#a9b2cf", fontSize: 10, position: "insideTopRight" }}
+          />
           <Area type="stepAfter" dataKey="liq" stroke="#22d3ee" strokeWidth={2} fill="url(#liqFill)" isAnimationActive />
         </AreaChart>
       </ResponsiveContainer>
