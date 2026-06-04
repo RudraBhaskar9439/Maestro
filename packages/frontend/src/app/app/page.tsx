@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useAccount, useConnect, useDisconnect, useReadContracts, useSwitchChain } from "wagmi";
+import { useAccount, useBlockNumber, useConnect, useDisconnect, useReadContracts, useSwitchChain } from "wagmi";
 import { formatUnits } from "viem";
 import { MAESTRO, maestroHookAbi } from "../../lib/maestro";
 import { LpActions } from "../../components/LpActions";
+import { ConcentrationChart } from "../../components/ConcentrationChart";
 import { unichainSepolia } from "../../lib/chain";
 
 const hook = { address: MAESTRO.hook, abi: maestroHookAbi } as const;
@@ -63,7 +64,14 @@ export default function Dashboard() {
   const tickLower = data?.[3]?.result as number | undefined;
   const tickUpper = data?.[4]?.result as number | undefined;
   const lease = data?.[5]?.result as
-    | { manager: string; rentRate: bigint; deposit: bigint; accruedRent: bigint; totalRentCharged: bigint }
+    | {
+        manager: string;
+        rentRate: bigint;
+        deposit: bigint;
+        lastChargeBlock: bigint;
+        accruedRent: bigint;
+        totalRentCharged: bigint;
+      }
     | undefined;
   const oracleOk = data?.[6]?.status === "success";
   const oracleTick = data?.[6]?.result as number | undefined;
@@ -72,6 +80,13 @@ export default function Dashboard() {
 
   const hasManager = !!lease && lease.manager !== ZERO;
   const feePct = fee !== undefined ? (fee / 10000).toFixed(2) : "—";
+
+  // Live, block-driven rent owed to LPs: recorded total + rent accruing since the last charge.
+  const { data: blockNumber } = useBlockNumber({ watch: true, chainId: unichainSepolia.id });
+  let liveRent = lease?.totalRentCharged;
+  if (lease && hasManager && blockNumber && blockNumber > lease.lastChargeBlock) {
+    liveRent = lease.totalRentCharged + lease.rentRate * (blockNumber - lease.lastChargeBlock);
+  }
 
   return (
     <div className="relative min-h-screen">
@@ -122,7 +137,10 @@ export default function Dashboard() {
       <main className="relative z-10 mx-auto max-w-6xl px-6 py-10 pb-24">
         <div id="pool" className="mb-3 flex items-center justify-between">
           <h1 className="text-sm uppercase tracking-wider text-[var(--muted)]">Live Pool State</h1>
-          <span className="mono text-xs text-[var(--muted)]">{isLoading ? "syncing…" : "● live"}</span>
+          <span className="mono flex items-center gap-2 text-xs text-[var(--muted)]">
+            <span className="live-dot h-1.5 w-1.5 rounded-full bg-[var(--positive)]" />
+            {blockNumber ? `block ${blockNumber.toLocaleString()}` : "syncing…"}
+          </span>
         </div>
         <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
           <Stat label="Swap Fee" value={`${feePct}%`} sub={hasManager ? "set by manager" : "default"} />
@@ -135,7 +153,7 @@ export default function Dashboard() {
             mono
           />
           <Stat label="Manager Rent / blk" value={fmtToken(lease?.rentRate)} sub="currency1" />
-          <Stat label="Rent Charged (total)" value={fmtToken(lease?.totalRentCharged)} sub="→ to LPs" accent />
+          <Stat label="Rent → LPs (live)" value={fmtToken(liveRent)} sub="accruing every block" accent />
           <Stat label="Accrued Rent" value={fmtToken(lease?.accruedRent)} sub="pending distribution" />
           <Stat
             label="Oracle Tick (Pyth)"
@@ -143,6 +161,18 @@ export default function Dashboard() {
             sub={oracleOk ? "ETH/USD" : "needs fresh push"}
             mono
           />
+        </section>
+
+        <section className="mt-6">
+          <Panel title="Liquidity Concentration">
+            <div className="mb-3 flex items-center justify-between text-xs text-[var(--muted)]">
+              <span>manager-controlled active band</span>
+              <span className="mono text-[var(--accent)]">
+                [{tickLower ?? "—"}, {tickUpper ?? "—"}]
+              </span>
+            </div>
+            <ConcentrationChart lower={tickLower} upper={tickUpper} />
+          </Panel>
         </section>
 
         <section id="auction" className="mt-6 grid gap-4 md:grid-cols-2">
