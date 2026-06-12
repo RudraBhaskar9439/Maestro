@@ -25,7 +25,7 @@ contract MaestroManagerRSC is AbstractReactive {
     bytes32 public immutable priceId; // the Pyth price feed to watch (e.g. ETH/USD)
     address public immutable managerCallback; // ManagerCallback on the destination chain (Unichain)
 
-    event ConcentrationDecision(int64 price, int24 newLower, int24 newUpper);
+    event PriceForwarded(int64 price);
 
     constructor(
         uint256 _originChainId,
@@ -48,26 +48,17 @@ contract MaestroManagerRSC is AbstractReactive {
         }
     }
 
-    /// @notice On each price update, choose a concentration band and trigger a cross-chain reposition.
+    /// @notice On each Pyth price update, forward the live price cross-chain so the manager re-concentrates
+    ///         the pool around it. The band math runs on the destination (where the Uniswap libraries live);
+    ///         here we just carry the trustlessly-observed origin price across chains.
     function react(LogRecord calldata log) external vmOnly {
         // PriceFeedUpdate non-indexed data: (uint64 publishTime, int64 price, uint64 conf)
         (, int64 price,) = abi.decode(log.data, (uint64, int64, uint64));
 
-        // Alternate the concentration width so each update visibly re-concentrates the pool.
-        // (Both bands straddle the 1:1 tick; oracle-aware band math is the production path / proven in tests.)
-        int24 newLower;
-        int24 newUpper;
-        if (uint256(uint64(price)) % 2 == 0) {
-            (newLower, newUpper) = (int24(-600), int24(600));
-        } else {
-            (newLower, newUpper) = (int24(-1200), int24(1200));
-        }
-
         // Leading address(0) is replaced by the ReactVM id when the callback executes.
-        bytes memory payload =
-            abi.encodeWithSignature("repositionTo(address,int24,int24)", address(0), newLower, newUpper);
+        bytes memory payload = abi.encodeWithSignature("repositionToPrice(address,int64)", address(0), price);
 
-        emit ConcentrationDecision(price, newLower, newUpper);
+        emit PriceForwarded(price);
         emit Callback(destinationChainId, managerCallback, CALLBACK_GAS_LIMIT, payload);
     }
 }

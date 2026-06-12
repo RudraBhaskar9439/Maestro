@@ -5,7 +5,8 @@ import {IHooks} from "@uniswap/v4-core/src/interfaces/IHooks.sol";
 import {Hooks} from "@uniswap/v4-core/src/libraries/Hooks.sol";
 import {TickMath} from "@uniswap/v4-core/src/libraries/TickMath.sol";
 import {LPFeeLibrary} from "@uniswap/v4-core/src/libraries/LPFeeLibrary.sol";
-import {IPoolManager} from "@uniswap/v4-core/src/interfaces/IPoolManager.sol";
+import {IPoolManager, ModifyLiquidityParams} from "@uniswap/v4-core/src/interfaces/IPoolManager.sol";
+import {IUnlockCallback} from "@uniswap/v4-core/src/interfaces/callback/IUnlockCallback.sol";
 import {PoolKey} from "@uniswap/v4-core/src/types/PoolKey.sol";
 import {BalanceDelta} from "@uniswap/v4-core/src/types/BalanceDelta.sol";
 import {PoolId, PoolIdLibrary} from "@uniswap/v4-core/src/types/PoolId.sol";
@@ -13,15 +14,11 @@ import {CurrencyLibrary, Currency} from "@uniswap/v4-core/src/types/Currency.sol
 import {StateLibrary} from "@uniswap/v4-core/src/libraries/StateLibrary.sol";
 import {Constants} from "@uniswap/v4-core/test/utils/Constants.sol";
 import {MockERC20} from "solmate/src/test/utils/mocks/MockERC20.sol";
-import {IPositionManager} from "@uniswap/v4-periphery/src/interfaces/IPositionManager.sol";
-
-import {EasyPosm} from "./utils/libraries/EasyPosm.sol";
 import {BaseTest} from "./utils/BaseTest.sol";
 import {MaestroHook} from "../src/MaestroHook.sol";
 import {HarbergerAuction} from "../src/auction/HarbergerAuction.sol";
 
 contract MaestroHookTest is BaseTest {
-    using EasyPosm for IPositionManager;
     using PoolIdLibrary for PoolKey;
     using CurrencyLibrary for Currency;
     using StateLibrary for IPoolManager;
@@ -123,25 +120,12 @@ contract MaestroHookTest is BaseTest {
         _swap(); // must route against hook-owned liquidity without reverting
     }
 
-    /// @dev External entrypoint so expectRevert binds to the whole mint, not EasyPosm's internal balanceOf.
-    function externalMint() external {
-        positionManager.mint(
-            poolKey,
-            TickMath.minUsableTick(60),
-            TickMath.maxUsableTick(60),
-            1e18,
-            type(uint256).max,
-            type(uint256).max,
-            address(this),
-            block.timestamp,
-            Constants.ZERO_BYTES
-        );
-    }
-
     function test_externalLiquidity_isBlocked() public {
-        // Adding liquidity directly via the PositionManager (not the hook) must revert.
+        // Adding liquidity directly (not via the hook) must revert: beforeAddLiquidity rejects
+        // any sender that isn't the hook itself (LiquidityOnlyViaHook).
+        ExternalLP ext = new ExternalLP(poolManager, poolKey);
         vm.expectRevert();
-        this.externalMint();
+        ext.tryAdd();
     }
 
     // ── the headline: manager-controlled concentration ──
@@ -219,5 +203,154 @@ contract MaestroHookTest is BaseTest {
         vm.prank(manager);
         vm.expectRevert(HarbergerAuction.FeeTooHigh.selector);
         hook.setFee(poolId, tooHigh);
+    }
+
+    // ── edge cases: auction ──
+
+    function test_bid_revertsRentTooLow() public {
+        _depositLP(alice, 100e18);
+        _becomeManager(manager, RENT);
+        address low = makeAddr("low");
+        MockERC20(Currency.unwrap(currency1)).mint(low, DEPOSIT_BOND);
+        vm.startPrank(low);
+        MockERC20(Currency.unwrap(currency1)).approve(address(hook), DEPOSIT_BOND);
+        vm.expectRevert(HarbergerAuction.RentTooLow.selector);
+        hook.bid(poolKey, RENT, DEPOSIT_BOND); // equal, not strictly higher
+        vm.stopPrank();
+    }
+
+    function test_bid_revertsDepositTooSmall() public {
+        address b = makeAddr("b");
+        uint128 rate = 1e15;
+        uint256 tooSmall = uint256(rate) * hook.K() - 1; // < rate * K
+        MockERC20(Currency.unwrap(currency1)).mint(b, tooSmall);
+        vm.startPrank(b);
+        MockERC20(Currency.unwrap(currency1)).approve(address(hook), tooSmall);
+        vm.expectRevert(HarbergerAuction.DepositTooSmall.selector);
+        hook.bid(poolKey, rate, tooSmall);
+        vm.stopPrank();
+    }
+
+    function test_topUp_increasesDeposit() public {
+        _depositLP(alice, 100e18);
+        _becomeManager(manager, RENT);
+        uint128 before = hook.getLease(poolId).deposit;
+        MockERC20(Currency.unwrap(currency1)).mint(manager, 5e17);
+        vm.startPrank(manager);
+        MockERC20(Currency.unwrap(currency1)).approve(address(hook), 5e17);
+        hook.topUp(poolId, 5e17);
+        vm.stopPrank();
+        assertGt(hook.getLease(poolId).deposit, before, "topUp should raise deposit");
+    }
+
+    function test_topUp_revertsNotManager() public {
+        _depositLP(alice, 100e18);
+        _becomeManager(manager, RENT);
+        vm.prank(alice);
+        vm.expectRevert(HarbergerAuction.NotManager.selector);
+        hook.topUp(poolId, 1e17);
+    }
+
+    function test_setFee_revertsNotManager() public {
+        _depositLP(alice, 100e18);
+        _becomeManager(manager, RENT);
+        vm.prank(alice);
+        vm.expectRevert(HarbergerAuction.NotManager.selector);
+        hook.setFee(poolId, 1000);
+    }
+
+    function test_outbidPending_refundsAndWithdraw() public {
+        _depositLP(alice, 100e18);
+        address b1 = makeAddr("b1");
+        address b2 = makeAddr("b2");
+        MockERC20(Currency.unwrap(currency1)).mint(b1, DEPOSIT_BOND);
+        MockERC20(Currency.unwrap(currency1)).mint(b2, DEPOSIT_BOND);
+
+        vm.startPrank(b1);
+        MockERC20(Currency.unwrap(currency1)).approve(address(hook), DEPOSIT_BOND);
+        hook.bid(poolKey, 1e15, DEPOSIT_BOND); // b1 becomes the pending bid
+        vm.stopPrank();
+
+        vm.startPrank(b2);
+        MockERC20(Currency.unwrap(currency1)).approve(address(hook), DEPOSIT_BOND);
+        hook.bid(poolKey, 2e15, DEPOSIT_BOND); // b2 outbids before promotion → b1 refunded
+        vm.stopPrank();
+
+        assertEq(hook.withdrawable(poolId, b1), DEPOSIT_BOND, "b1 should be refunded");
+        uint256 bal = MockERC20(Currency.unwrap(currency1)).balanceOf(b1);
+        vm.prank(b1);
+        hook.withdraw(poolId);
+        assertEq(MockERC20(Currency.unwrap(currency1)).balanceOf(b1), bal + DEPOSIT_BOND, "pull payment");
+    }
+
+    function test_manager_evictedWhenDepositExhausted() public {
+        _depositLP(alice, 100e18);
+        _becomeManager(manager, RENT); // deposit 1e18, rent 1e15/block → ~1000 blocks
+        vm.roll(block.number + 1001);
+        hook.poke(poolId);
+        assertEq(hook.getLease(poolId).manager, address(0), "manager should be evicted");
+    }
+
+    // ── edge cases: vault ──
+
+    function test_withdraw_revertsInsufficientShares() public {
+        uint256 shares = _depositLP(alice, 100e18);
+        vm.prank(alice);
+        vm.expectRevert(MaestroHook.InsufficientShares.selector);
+        hook.withdraw(shares + 1);
+    }
+
+    function test_withdraw_revertsZeroShares() public {
+        _depositLP(alice, 100e18);
+        vm.prank(alice);
+        vm.expectRevert(MaestroHook.InsufficientShares.selector);
+        hook.withdraw(0);
+    }
+
+    function test_secondDeposit_proportionalShares() public {
+        uint256 s1 = _depositLP(alice, 100e18);
+        uint256 s2 = _depositLP(makeAddr("bob"), 100e18);
+        assertApproxEqRel(s2, s1, 0.01e18, "equal deposits -> proportional shares");
+    }
+
+    function test_reposition_revertsNotStraddlingTick() public {
+        _depositLP(alice, 100e18);
+        _becomeManager(manager, RENT);
+        // band entirely above the current tick (0) must revert: it has to straddle the live price
+        vm.prank(manager);
+        vm.expectRevert(MaestroHook.InvalidRange.selector);
+        hook.reposition(60, 600);
+    }
+
+    function test_claimRent_zeroWhenNothingPending() public {
+        _depositLP(alice, 100e18);
+        vm.prank(alice);
+        hook.claimRent(); // no manager, nothing pending → must not revert
+        assertEq(hook.pendingRent(alice), 0);
+    }
+}
+
+/// @dev Attempts to add liquidity to the pool directly (not through the hook). The hook's
+///      beforeAddLiquidity rejects any sender that isn't the hook itself, so `tryAdd` reverts.
+contract ExternalLP is IUnlockCallback {
+    IPoolManager private immutable pm;
+    PoolKey private key;
+
+    constructor(IPoolManager _pm, PoolKey memory _k) {
+        pm = _pm;
+        key = _k;
+    }
+
+    function tryAdd() external {
+        pm.unlock("");
+    }
+
+    function unlockCallback(bytes calldata) external override returns (bytes memory) {
+        pm.modifyLiquidity(
+            key,
+            ModifyLiquidityParams({tickLower: -600, tickUpper: 600, liquidityDelta: 1e18, salt: bytes32(0)}),
+            ""
+        );
+        return "";
     }
 }

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 940" width="1240" height="940" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="1240" height="940" fill="#ffffff"/>
+<text x="620" y="40" fill="#1e1e1e" font-size="24" font-weight="700" text-anchor="middle">Maestro — Autonomous Cross-Chain am-AMM</text>
+<rect x="30" y="170" width="250" height="580" rx="16" fill="#eafaf0" stroke="#82b366" stroke-width="2"/>
+<text x="155" y="200" fill="#2e7d32" font-size="20" font-weight="700" text-anchor="middle">FRONTEND</text>
+<rect x="310" y="70" width="560" height="820" rx="16" fill="#fde7e9" stroke="#cc8a8a" stroke-width="2"/>
+<text x="590" y="100" fill="#c47d00" font-size="20" font-weight="700" text-anchor="middle">Unichain Sepolia</text>
+<rect x="900" y="240" width="300" height="560" rx="16" fill="#dae8fc" stroke="#6c8ebf" stroke-width="2"/>
+<text x="1050" y="270" fill="#2e5fb0" font-size="20" font-weight="700" text-anchor="middle">Reactive</text>
+<rect x="900" y="70" width="300" height="140" rx="16" fill="#e9f7ef" stroke="#82b366" stroke-width="2"/>
+<text x="1050" y="100" fill="#2e7d32" font-size="20" font-weight="700" text-anchor="middle">Ethereum Sepolia (origin)</text>
+<rect x="55" y="220" width="200" height="60" rx="10" fill="#d5e8d4" stroke="#82b366" stroke-width="2"/>
+<text x="155" y="240.575" fill="#2e7d32" font-size="13" text-anchor="middle" dominant-baseline="central">Landing + App</text>
+<text x="155" y="259.425" fill="#2e7d32" font-size="13" text-anchor="middle" dominant-baseline="central">(Next.js 16)</text>
+<rect x="55" y="300" width="200" height="70" rx="10" fill="#d5e8d4" stroke="#82b366" stroke-width="2"/>
+<text x="155" y="325.575" fill="#2e7d32" font-size="13" text-anchor="middle" dominant-baseline="central">Live dashboard</text>
+<text x="155" y="344.425" fill="#2e7d32" font-size="13" text-anchor="middle" dominant-baseline="central">ETH/USD (Pyth) + band</text>
+<rect x="55" y="390" width="200" height="70" rx="10" fill="#d5e8d4" stroke="#82b366" stroke-width="2"/>
+<text x="155" y="415.575" fill="#2e7d32" font-size="13" text-anchor="middle" dominant-baseline="central">LP actions</text>
+<text x="155" y="434.425" fill="#2e7d32" font-size="13" text-anchor="middle" dominant-baseline="central">deposit · withdraw · claim</text>
+<rect x="55" y="480" width="200" height="70" rx="10" fill="#d5e8d4" stroke="#82b366" stroke-width="2"/>
+<text x="155" y="505.575" fill="#2e7d32" font-size="13" text-anchor="middle" dominant-baseline="central">Activity feed</text>
+<text x="155" y="524.425" fill="#2e7d32" font-size="13" text-anchor="middle" dominant-baseline="central">+ verify ↗ links</text>
+<rect x="340" y="120" width="500" height="70" rx="10" fill="#d5e8d4" stroke="#82b366" stroke-width="2"/>
+<text x="590" y="145.9375" fill="#2e7d32" font-size="12.5" font-weight="700" text-anchor="middle" dominant-baseline="central">MaestroHook events</text>
+<text x="590" y="164.0625" fill="#2e7d32" font-size="12.5" text-anchor="middle" dominant-baseline="central">Deposit · BidPlaced · ManagerChanged · RentClaimed · Repositioned</text>
+<rect x="340" y="240" width="500" height="380" rx="10" fill="#fff2cc" stroke="#d6b656" stroke-width="2.5"/>
+<text x="356" y="266" fill="#b8860b" font-size="15" font-weight="700">MAESTRO HOOK   ·   WETH / USDC @ live ETH price</text>
+<line x1="352" y1="278" x2="828" y2="278" stroke="#d6b656" stroke-width="1.2"/>
+<text x="356" y="300" fill="#212529" font-size="12.5">MaestroHook.sol  +  HarbergerAuction.sol</text>
+<text x="356" y="322" fill="#212529" font-size="12.5"></text>
+<text x="356" y="344" fill="#212529" font-size="12.5">• Hook-owned liquidity vault → LP shares</text>
+<text x="356" y="366" fill="#212529" font-size="12.5">• Harberger auction: bid → K=10 delay → manager</text>
+<text x="356" y="388" fill="#212529" font-size="12.5">      manager pays rent every block → LPs</text>
+<text x="356" y="410" fill="#212529" font-size="12.5">• repositionToPrice(price): band spans [spot, oracle]</text>
+<text x="356" y="432" fill="#212529" font-size="12.5">• beforeSwap: _poke charge rent + override fee (≤ 5%)</text>
+<text x="356" y="454" fill="#212529" font-size="12.5">• afterSwap: distribute rent to LP shares</text>
+<text x="356" y="476" fill="#212529" font-size="12.5">• before add / remove liquidity → REVERT (hook-owned)</text>
+<rect x="340" y="680" width="240" height="90" rx="10" fill="#d5e8d4" stroke="#82b366" stroke-width="2"/>
+<text x="460" y="706.875" fill="#2e7d32" font-size="12.5" font-weight="700" text-anchor="middle" dominant-baseline="central">ManagerCallback</text>
+<text x="460" y="725" fill="#2e7d32" font-size="12.5" text-anchor="middle" dominant-baseline="central">(cross-chain destination)</text>
+<text x="460" y="743.125" fill="#2e7d32" font-size="12.5" text-anchor="middle" dominant-baseline="central">wins auction · repositionToPrice</text>
+<rect x="600" y="680" width="240" height="90" rx="10" fill="#ffe6cc" stroke="#d79b00" stroke-width="2"/>
+<text x="720" y="706.875" fill="#b35f00" font-size="12.5" font-weight="700" text-anchor="middle" dominant-baseline="central">Swappers / Arbitrageurs</text>
+<text x="720" y="725" fill="#b35f00" font-size="12.5" text-anchor="middle" dominant-baseline="central">swap → spot tracks oracle</text>
+<text x="720" y="743.125" fill="#b35f00" font-size="12.5" text-anchor="middle" dominant-baseline="central">LVR value → LP rent</text>
+<rect x="925" y="300" width="250" height="190" rx="10" fill="#d5e8d4" stroke="#82b366" stroke-width="2.5"/>
+<text x="941" y="326" fill="#2e7d32" font-size="15" font-weight="700">MaestroManagerRSC</text>
+<line x1="937" y1="338" x2="1163" y2="338" stroke="#82b366" stroke-width="1.2"/>
+<text x="941" y="360" fill="#212529" font-size="12.5">subscribe:</text>
+<text x="941" y="382" fill="#212529" font-size="12.5">  Pyth PriceFeedUpdate</text>
+<text x="941" y="404" fill="#212529" font-size="12.5">react():</text>
+<text x="941" y="426" fill="#212529" font-size="12.5">  decode the LIVE price →</text>
+<text x="941" y="448" fill="#212529" font-size="12.5">  forward it cross-chain →</text>
+<text x="941" y="470" fill="#212529" font-size="12.5">  emit Callback(repositionToPrice)</text>
+<rect x="925" y="620" width="250" height="80" rx="10" fill="#d5e8d4" stroke="#82b366" stroke-width="2"/>
+<text x="1050" y="650.575" fill="#2e7d32" font-size="13" text-anchor="middle" dominant-baseline="central">Callback proxy</text>
+<text x="1050" y="669.4250000000001" fill="#2e7d32" font-size="13" text-anchor="middle" dominant-baseline="central">[ SYSTEM 0x…fffFfF ]</text>
+<rect x="925" y="110" width="250" height="75" rx="10" fill="#d5e8d4" stroke="#82b366" stroke-width="2"/>
+<text x="1050" y="138.075" fill="#2e7d32" font-size="13" font-weight="700" text-anchor="middle" dominant-baseline="central">Pyth ETH/USD</text>
+<text x="1050" y="156.92499999999998" fill="#2e7d32" font-size="13" text-anchor="middle" dominant-baseline="central">PriceFeedUpdate (live)</text>
+<line x1="1050" y1="185" x2="1050" y2="300" stroke="#5a6270" stroke-width="2"/>
+<polyline points="1044.7263190753538,290.3465918192059 1050,300 1055.2736809246462,290.3465918192059" fill="none" stroke="#5a6270" stroke-width="2"/>
+<text x="1050" y="234.5" fill="#5a6270" font-size="11.5" text-anchor="middle">PriceFeedUpdate (subscribed)</text>
+<line x1="1050" y1="490" x2="1050" y2="620" stroke="#5a6270" stroke-width="2"/>
+<polyline points="1044.7263190753538,610.3465918192059 1050,620 1055.2736809246462,610.3465918192059" fill="none" stroke="#5a6270" stroke-width="2"/>
+<text x="1050" y="547" fill="#5a6270" font-size="11.5" text-anchor="middle">emit Callback</text>
+<line x1="925" y1="660" x2="582" y2="722" stroke="#5a6270" stroke-width="2"/>
+<polyline points="590.5614068559568,715.0933139171686 582,722 592.4375238056278,725.4724770419618" fill="none" stroke="#5a6270" stroke-width="2"/>
+<text x="743.5" y="681" fill="#5a6270" font-size="11.5" text-anchor="middle">cross-chain callback → repositionToPrice</text>
+<line x1="460" y1="680" x2="460" y2="622" stroke="#5a6270" stroke-width="2"/>
+<polyline points="465.2736809246462,631.6534081807941 460,622 454.7263190753538,631.6534081807941" fill="none" stroke="#5a6270" stroke-width="2"/>
+<text x="460" y="643" fill="#5a6270" font-size="11.5" text-anchor="middle">bid · repositionToPrice</text>
+<line x1="720" y1="680" x2="720" y2="622" stroke="#d79b00" stroke-width="2"/>
+<polyline points="725.2736809246462,631.6534081807941 720,622 714.7263190753538,631.6534081807941" fill="none" stroke="#d79b00" stroke-width="2"/>
+<text x="720" y="643" fill="#d79b00" font-size="11.5" text-anchor="middle">swap → spot tracks oracle</text>
+<line x1="255" y1="425" x2="340" y2="425" stroke="#5a6270" stroke-width="2"/>
+<polyline points="330.3465918192059,430.2736809246462 340,425 330.3465918192059,419.7263190753538" fill="none" stroke="#5a6270" stroke-width="2"/>
+<text x="297.5" y="415" fill="#5a6270" font-size="11.5" text-anchor="middle">deposit · read state</text>
+<line x1="590" y1="240" x2="590" y2="192" stroke="#5a6270" stroke-width="2"/>
+<polyline points="595.2736809246462,201.6534081807941 590,192 584.7263190753538,201.6534081807941" fill="none" stroke="#5a6270" stroke-width="2"/>
+<text x="614" y="214" fill="#5a6270" font-size="11.5" text-anchor="middle">emits</text>
+</svg>

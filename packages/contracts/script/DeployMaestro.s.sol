@@ -15,6 +15,7 @@ import {IPyth} from "@pythnetwork/pyth-sdk-solidity/IPyth.sol";
 
 import {MaestroHook} from "../src/MaestroHook.sol";
 import {ManagerCallback} from "../src/reactive/ManagerCallback.sol";
+import {OracleMath} from "../src/libraries/OracleMath.sol";
 
 /// @notice One-shot deploy of the Unichain-side Maestro stack:
 ///         mine + deploy the hook, initialize the dynamic-fee pool, wire Pyth, deploy ManagerCallback.
@@ -25,7 +26,6 @@ contract DeployMaestro is Script {
 
     // Canonical CREATE2 deterministic deployer (Foundry routes `new{salt}` through it on broadcast).
     address constant CREATE2_DEPLOYER = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
-    uint160 constant SQRT_PRICE_1_1 = 79228162514264337593543950336;
 
     function run() external {
         IPoolManager poolManager = IPoolManager(vm.envAddress("POOL_MANAGER"));
@@ -36,6 +36,10 @@ contract DeployMaestro is Script {
         address callbackProxy = vm.envAddress("CALLBACK_PROXY");
         int24 tickSpacing = int24(vm.envOr("TICK_SPACING", int256(60)));
         uint256 maxAge = vm.envOr("MAX_AGE", uint256(120));
+        // Initialize at a realistic ETH/USD price (currency1-per-currency0) so the pool tracks the live
+        // oracle from block one. Default 3000.00000000 (price * 10^INIT_EXPO). Override per the live price.
+        int64 initPrice = int64(vm.envOr("INIT_PRICE", int256(300000000000)));
+        int32 initExpo = int32(vm.envOr("INIT_EXPO", int256(-8)));
 
         // Currencies must be sorted.
         (Currency currency0, Currency currency1) =
@@ -60,7 +64,8 @@ contract DeployMaestro is Script {
             tickSpacing: tickSpacing,
             hooks: IHooks(address(hook))
         });
-        poolManager.initialize(key, SQRT_PRICE_1_1);
+        uint160 initSqrtPrice = OracleMath.priceToSqrtPriceX96(initPrice, initExpo);
+        poolManager.initialize(key, initSqrtPrice);
 
         hook.setOracle(IPyth(pyth), priceId, maxAge);
 
@@ -74,6 +79,8 @@ contract DeployMaestro is Script {
         console.log("currency0:       ", Currency.unwrap(currency0));
         console.log("currency1:       ", Currency.unwrap(currency1));
         console.log("tickSpacing:     ", int256(tickSpacing));
+        console.log("init price (1eN):", int256(initPrice));
+        console.log("init sqrtPriceX96:", uint256(initSqrtPrice));
         console.log("PoolId (for the RSC) below:");
         console.logBytes32(PoolId.unwrap(key.toId()));
     }

@@ -33,10 +33,10 @@ export function SiteFooter() {
           <span className="text-[var(--muted)]">· auction-managed AMM</span>
         </div>
         <div className="mono flex flex-wrap gap-x-6 gap-y-1">
-          <a href="https://sepolia.uniscan.xyz/address/0x9d756CfA7a0eb3a83e1b6792037b6F950af5eac0" target="_blank" rel="noreferrer" className="hover:text-[var(--text)]">
+          <a href="https://sepolia.uniscan.xyz/address/0xcdb58D67f4aD38705652f21407490df49Cd2eAc0" target="_blank" rel="noreferrer" className="hover:text-[var(--text)]">
             hook ↗
           </a>
-          <a href="https://sepolia.uniscan.xyz/address/0x94535D4EC8c013F6D669ae72ab2683aC7EE820C4" target="_blank" rel="noreferrer" className="hover:text-[var(--text)]">
+          <a href="https://sepolia.uniscan.xyz/address/0x01462516c7B4E42d7a91807375459B3eb29807EC" target="_blank" rel="noreferrer" className="hover:text-[var(--text)]">
             manager ↗
           </a>
           <span>Unichain Sepolia · Reactive Lasna</span>

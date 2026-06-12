@@ -6,10 +6,15 @@ import { Area, AreaChart, ReferenceLine, ResponsiveContainer, XAxis, YAxis } fro
 export function ConcentrationChart({ lower, upper }: { lower?: number; upper?: number }) {
   const lo = lower ?? -600;
   const hi = upper ?? 600;
-  const span = Math.max(2400, Math.abs(lo) * 2, Math.abs(hi) * 2);
+  // Center the view on the active band — it can sit at any tick (e.g. ~74,700 for ETH ≈ $1,754).
+  const center = Math.round((lo + hi) / 2);
+  const half = Math.max(1200, (hi - lo) * 2);
+  const start = center - half;
+  const end = center + half;
+  const step = Math.max(60, Math.round((end - start) / 80 / 60) * 60);
 
   const data: { tick: number; liq: number }[] = [];
-  for (let t = -span; t <= span; t += 60) {
+  for (let t = start; t <= end; t += step) {
     data.push({ tick: t, liq: t >= lo && t <= hi ? 1 : 0.04 });
   }
 
@@ -28,11 +33,11 @@ export function ConcentrationChart({ lower, upper }: { lower?: number; upper?: n
             tick={{ fill: "#8b97b8", fontSize: 10 }}
             tickLine={false}
             axisLine={{ stroke: "#1e2840" }}
-            ticks={[-span, lo, 0, hi, span]}
+            ticks={[start, lo, center, hi, end]}
           />
           <YAxis hide domain={[0, 1.1]} />
           <ReferenceLine
-            x={0}
+            x={center}
             stroke="#6d4bff"
             strokeDasharray="4 3"
             label={{ value: "price", fill: "#a9b2cf", fontSize: 10, position: "insideTopRight" }}

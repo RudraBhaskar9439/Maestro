@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
+import { IntroOverlay } from "../components/IntroOverlay";
 
 export const metadata: Metadata = {
-  title: "Maestro — Auction-Managed AMM",
+  title: "Maestro · Auction-Managed AMM",
   description:
     "An auction-managed AMM on Uniswap v4 with an autonomous, cross-chain pool manager. Rent flows to LPs; liquidity is concentrated by a Reactive agent.",
 };
@@ -19,6 +20,7 @@ export default function RootLayout({
           <span className="b2" />
           <span className="b3" />
         </div>
+        <IntroOverlay />
         <Providers>{children}</Providers>
       </body>
     </html>

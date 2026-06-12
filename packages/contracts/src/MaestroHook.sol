@@ -243,6 +243,30 @@ contract MaestroHook is BaseHook, HarbergerAuction, IUnlockCallback {
         emit RepositionedToOracle(oTick, newLower, newUpper);
     }
 
+    /// @notice Reposition using a price supplied by the cross-chain manager (the price observed by the
+    ///         Reactive contract on the origin chain), spanning [spot, oracleTick] padded by `halfWidth`.
+    /// @dev    Same band math as `repositionToOracle`, but the price travels trustlessly across chains in
+    ///         the callback instead of being read from a (possibly stale) local Pyth feed. This is the
+    ///         autonomous path: the manager follows the live ETH price without any keeper.
+    function repositionToPrice(int64 price, int32 expo, int24 halfWidth) external {
+        PoolId id = poolKey.toId();
+        _poke(id);
+        if (msg.sender != _leases[id].manager) revert NotManager();
+        if (positionLiquidity == 0) revert NothingToReposition();
+
+        int24 oTick = OracleMath.priceToTick(price, expo);
+        (, int24 currentTick,,) = poolManager.getSlot0(id);
+        int24 spacing = poolKey.tickSpacing;
+
+        int24 lo = oTick < currentTick ? oTick : currentTick;
+        int24 hi = oTick > currentTick ? oTick : currentTick;
+        int24 newLower = _alignFloor(lo - halfWidth, spacing);
+        int24 newUpper = _alignCeil(hi + halfWidth, spacing);
+
+        poolManager.unlock(abi.encode(CallbackData(Action.REPOSITION, msg.sender, 0, newLower, newUpper)));
+        emit RepositionedToOracle(oTick, newLower, newUpper);
+    }
+
     function _alignFloor(int24 tick, int24 spacing) private pure returns (int24 a) {
         a = (tick / spacing) * spacing;
         if (tick < 0 && a > tick) a -= spacing;

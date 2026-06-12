@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -4 2802 844" width="2802" height="844" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+<rect x="0" y="-4" width="2802" height="844" fill="#ffffff"/>
+<rect x="40" y="150" width="380" height="260" rx="10" fill="#ffc9c9" stroke="#e03131" stroke-width="2.5"/>
+<rect x="60" y="170" width="46" height="46" rx="10" fill="#e03131" stroke="#ffffff" stroke-width="2"/>
+<rect x="480" y="150" width="380" height="260" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.5"/>
+<rect x="500" y="170" width="46" height="46" rx="10" fill="#1971c2" stroke="#ffffff" stroke-width="2"/>
+<rect x="920" y="150" width="380" height="260" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.5"/>
+<rect x="940" y="170" width="46" height="46" rx="10" fill="#1971c2" stroke="#ffffff" stroke-width="2"/>
+<rect x="1360" y="150" width="380" height="260" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.5"/>
+<rect x="1380" y="170" width="46" height="46" rx="10" fill="#1971c2" stroke="#ffffff" stroke-width="2"/>
+<rect x="1360" y="540" width="380" height="260" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2.5"/>
+<rect x="1380" y="560" width="46" height="46" rx="10" fill="#6741d9" stroke="#ffffff" stroke-width="2"/>
+<rect x="920" y="540" width="380" height="260" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2.5"/>
+<rect x="940" y="560" width="46" height="46" rx="10" fill="#6741d9" stroke="#ffffff" stroke-width="2"/>
+<rect x="480" y="540" width="380" height="260" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.5"/>
+<rect x="500" y="560" width="46" height="46" rx="10" fill="#2f9e44" stroke="#ffffff" stroke-width="2"/>
+<rect x="40" y="600" width="380" height="140" rx="10" fill="#e9ecef" stroke="#1e1e1e" stroke-width="2" stroke-dasharray="7 5"/>
+<line x1="420" y1="280" x2="480" y2="280" stroke="#495057" stroke-width="2"/>
+<polyline points="470.0950818741206,284.78462087522354 480,280 470.0950818741206,275.21537912477646" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="860" y1="280" x2="920" y2="280" stroke="#495057" stroke-width="2"/>
+<polyline points="910.0950818741205,284.78462087522354 920,280 910.0950818741205,275.21537912477646" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="1300" y1="280" x2="1360" y2="280" stroke="#495057" stroke-width="2"/>
+<polyline points="1350.0950818741205,284.78462087522354 1360,280 1350.0950818741205,275.21537912477646" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="1550" y1="410" x2="1550" y2="540" stroke="#495057" stroke-width="2"/>
+<polyline points="1545.2153791247765,530.0950818741205 1550,540 1554.7846208752235,530.0950818741205" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="1360" y1="670" x2="1300" y2="670" stroke="#495057" stroke-width="2"/>
+<polyline points="1309.9049181258795,665.2153791247765 1300,670 1309.9049181258795,674.7846208752235" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="920" y1="670" x2="860" y2="670" stroke="#495057" stroke-width="2"/>
+<polyline points="869.9049181258795,665.2153791247765 860,670 869.9049181258795,674.7846208752235" fill="none" stroke="#495057" stroke-width="2"/>
+<text x="700" y="68" fill="#1e1e1e" font-size="32" font-weight="700" text-anchor="start">Maestro — The Story</text>
+<text x="560" y="102" fill="#868e96" font-size="16" text-anchor="start">From impermanent loss to liquidity that manages itself  ·  narrate 1 → 7</text>
+<text x="83" y="193" fill="#ffffff" font-size="24" font-weight="700" text-anchor="middle" dominant-baseline="central">1</text>
+<text x="120" y="202" fill="#e03131" font-size="22" font-weight="700" text-anchor="start">The problem</text>
+<text x="64" y="251" fill="#212529" font-size="15" text-anchor="start">A liquidity pool sits still while the</text>
+<text x="64" y="269.75" fill="#212529" font-size="15" text-anchor="start">price moves. Arbitrageurs skim the gap</text>
+<text x="64" y="288.5" fill="#212529" font-size="15" text-anchor="start">(LVR) and LPs are left with impermanent</text>
+<text x="64" y="307.25" fill="#212529" font-size="15" text-anchor="start">loss. No one is steering the pool.</text>
+<text x="523" y="193" fill="#ffffff" font-size="24" font-weight="700" text-anchor="middle" dominant-baseline="central">2</text>
+<text x="560" y="202" fill="#1971c2" font-size="22" font-weight="700" text-anchor="start">The idea: am-AMM</text>
+<text x="504" y="251" fill="#212529" font-size="15" text-anchor="start">What if we SOLD the right to run the</text>
+<text x="504" y="269.75" fill="#212529" font-size="15" text-anchor="start">pool? A continuous auction picks a 'pool</text>
+<text x="504" y="288.5" fill="#212529" font-size="15" text-anchor="start">manager' — and the rent they pay flows</text>
+<text x="504" y="307.25" fill="#212529" font-size="15" text-anchor="start">straight to the LPs.</text>
+<text x="963" y="193" fill="#ffffff" font-size="24" font-weight="700" text-anchor="middle" dominant-baseline="central">3</text>
+<text x="1000" y="202" fill="#1971c2" font-size="22" font-weight="700" text-anchor="start">The auction</text>
+<text x="944" y="251" fill="#212529" font-size="15" text-anchor="start">Anyone bids a per-block rent to become</text>
+<text x="944" y="269.75" fill="#212529" font-size="15" text-anchor="start">manager. Each bid must beat the last;</text>
+<text x="944" y="288.5" fill="#212529" font-size="15" text-anchor="start">the winner takes over after a 10-block</text>
+<text x="944" y="307.25" fill="#212529" font-size="15" text-anchor="start">delay, then pays rent every block until</text>
+<text x="944" y="326" fill="#212529" font-size="15" text-anchor="start">outbid.</text>
+<text x="1403" y="193" fill="#ffffff" font-size="24" font-weight="700" text-anchor="middle" dominant-baseline="central">4</text>
+<text x="1440" y="202" fill="#1971c2" font-size="22" font-weight="700" text-anchor="start">The manager's job</text>
+<text x="1384" y="251" fill="#212529" font-size="15" text-anchor="start">The manager concentrates liquidity</text>
+<text x="1384" y="269.75" fill="#212529" font-size="15" text-anchor="start">around the live price and sets the swap</text>
+<text x="1384" y="288.5" fill="#212529" font-size="15" text-anchor="start">fee. Better placement -&gt; more fees -&gt;</text>
+<text x="1384" y="307.25" fill="#212529" font-size="15" text-anchor="start">worth the rent. The arbitrageur now</text>
+<text x="1384" y="326" fill="#212529" font-size="15" text-anchor="start">works for the LPs.</text>
+<text x="1403" y="583" fill="#ffffff" font-size="24" font-weight="700" text-anchor="middle" dominant-baseline="central">5</text>
+<text x="1440" y="592" fill="#6741d9" font-size="22" font-weight="700" text-anchor="start">The twist</text>
+<text x="1384" y="641" fill="#212529" font-size="15" text-anchor="start">But a human manager is slow and</text>
+<text x="1384" y="659.75" fill="#212529" font-size="15" text-anchor="start">centralized. So Maestro makes the</text>
+<text x="1384" y="678.5" fill="#212529" font-size="15" text-anchor="start">manager a SMART CONTRACT — autonomous,</text>
+<text x="1384" y="697.25" fill="#212529" font-size="15" text-anchor="start">unstoppable, no keeper, no bot.</text>
+<text x="963" y="583" fill="#ffffff" font-size="24" font-weight="700" text-anchor="middle" dominant-baseline="central">6</text>
+<text x="1000" y="592" fill="#6741d9" font-size="22" font-weight="700" text-anchor="start">The cross-chain brain</text>
+<text x="944" y="641" fill="#212529" font-size="15" text-anchor="start">A Pyth price update on Ethereum Sepolia</text>
+<text x="944" y="659.75" fill="#212529" font-size="15" text-anchor="start">wakes our Reactive contract on Lasna. It</text>
+<text x="944" y="678.5" fill="#212529" font-size="15" text-anchor="start">picks the new tick band and fires a</text>
+<text x="944" y="697.25" fill="#212529" font-size="15" text-anchor="start">cross-chain callback to Unichain, which</text>
+<text x="944" y="716" fill="#212529" font-size="15" text-anchor="start">repositions the pool — automatically.</text>
+<text x="523" y="583" fill="#ffffff" font-size="24" font-weight="700" text-anchor="middle" dominant-baseline="central">7</text>
+<text x="560" y="592" fill="#2f9e44" font-size="22" font-weight="700" text-anchor="start">The result</text>
+<text x="504" y="641" fill="#212529" font-size="15" text-anchor="start">Liquidity that follows the price by</text>
+<text x="504" y="659.75" fill="#212529" font-size="15" text-anchor="start">itself. Arbitrage value recaptured as LP</text>
+<text x="504" y="678.5" fill="#212529" font-size="15" text-anchor="start">income. Two open am-AMM problems —</text>
+<text x="504" y="697.25" fill="#212529" font-size="15" text-anchor="start">concentrated liquidity + an autonomous</text>
+<text x="504" y="716" fill="#212529" font-size="15" text-anchor="start">manager — solved.</text>
+<text x="1532.5" y="466" fill="#495057" font-size="13" text-anchor="start">then…</text>
+<text x="64" y="642" fill="#1e1e1e" font-size="16" text-anchor="start">One line: "The pool runs itself,</text>
+<text x="64" y="662" fill="#1e1e1e" font-size="16" text-anchor="start">across chains — and LPs get paid the</text>
+<text x="64" y="682" fill="#1e1e1e" font-size="16" text-anchor="start">value that used to leak out."</text>
+</svg>

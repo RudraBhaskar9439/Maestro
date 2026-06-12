@@ -2,17 +2,27 @@
 
 ## Unichain Sepolia (chain id 1301) — deployed ✅
 
+**Oracle-driven deployment (band follows the live ETH/USD price). Pool initialized at $1,754.20.**
+
 | Contract | Address |
 | --- | --- |
-| MaestroHook | `0x9d756CfA7a0eb3a83e1b6792037b6F950af5eac0` |
-| ManagerCallback | `0x94535D4EC8c013F6D669ae72ab2683aC7EE820C4` |
-| currency0 (MT0) | `0x4d10aEc03a166d24b214eEDBa7B75c5B4Af3e6aD` |
-| currency1 (MT1) | `0x83981Eb34e5e68B7E406bc2a5CE0d47495406fc2` |
-| PoolId | `0x86f460d7dec81de8bd87eacd1896fcc8be6319dd82064704237a870ea41145fb` |
+| MaestroHook | `0xcdb58D67f4aD38705652f21407490df49Cd2eAc0` |
+| ManagerCallback | `0x01462516c7B4E42d7a91807375459B3eb29807EC` |
+| currency0 (WETH / MT0) | `0x4d10aEc03a166d24b214eEDBa7B75c5B4Af3e6aD` |
+| currency1 (USDC / MT1) | `0x83981Eb34e5e68B7E406bc2a5CE0d47495406fc2` |
+| PoolId | `0x7b120a4043ace23580655dd1cecadcde205b20f431b69a19da2c987e77f66f63` |
 | Pyth | `0x2880aB155794e7179c9eE2e38200202908C17B43` |
 | PoolManager | `0x00B036B58a818B1BC34d502D3fE730Db729e62AC` |
+| V4 Swap Router (arbitrage) | `0x9cD2b0a732dd5e023a5539921e0FD1c30E198Dba` |
 
 Deployer: `0xd1DcAAFf9356d5a42f2eE6F90179C4509386a83f`
+
+### 🎯 Autonomous oracle-driven reposition — VERIFIED LIVE (2026-06-04)
+Pushed a live Pyth ETH/USD update on Ethereum Sepolia → the RSC reacted on Lasna → cross-chain
+callback → the hook **re-concentrated liquidity from full-range to `[74100, 75420]`** (tick ~74,700 ≈
+**$1,754**) on Unichain — autonomously, no keeper. The band now tracks the live ETH price on every update.
+
+_Previous parity-band deployment (1:1 mock pool): hook `0x9d756…eac0`, callback `0x94535…20C4`, rsc `0x07A5…d923`._
 
 ### Verified live on Unichain Sepolia ✅
 - Full stack deployed (hook + dynamic-fee pool + Pyth wired + ManagerCallback).

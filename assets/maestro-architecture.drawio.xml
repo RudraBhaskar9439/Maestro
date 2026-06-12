@@ -1,0 +1,126 @@
+<mxfile host="app.diagrams.net" version="21.0.0">
+  <diagram id="maestro-arch-v2" name="Maestro Architecture v2">
+    <mxGraphModel dx="1700" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1750" pageHeight="1250" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ============ LANES ============ -->
+        <mxCell id="L_FE" value="FRONTEND" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#eafaf0;strokeColor=#82b366;verticalAlign=top;fontColor=#2e7d32;fontSize=18;fontStyle=1;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="300" height="560" as="geometry" />
+        </mxCell>
+        <mxCell id="L_UNI" value="Unichain Sepolia" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#fde7e9;strokeColor=#cc8a8a;verticalAlign=top;fontColor=#c47d00;fontSize=22;fontStyle=1;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="400" y="80" width="780" height="1120" as="geometry" />
+        </mxCell>
+        <mxCell id="L_REACT" value="Reactive" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontColor=#2e5fb0;fontSize=22;fontStyle=1;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="260" width="380" height="720" as="geometry" />
+        </mxCell>
+        <mxCell id="L_ETH" value="Ethereum Sepolia (origin)" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#e9f7ef;strokeColor=#82b366;verticalAlign=top;fontColor=#2e7d32;fontSize=15;fontStyle=1;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="80" width="380" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- ============ FRONTEND CHILDREN ============ -->
+        <mxCell id="FE1" value="Landing + App&lt;br&gt;(Next.js 16)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#2e7d32;" vertex="1" parent="L_FE">
+          <mxGeometry x="30" y="55" width="240" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="FE2" value="Live dashboard&lt;br&gt;live ETH/USD (Pyth) + band tracking" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#2e7d32;" vertex="1" parent="L_FE">
+          <mxGeometry x="30" y="140" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="FE3" value="LP actions:&lt;br&gt;deposit · withdraw · claimRent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#2e7d32;" vertex="1" parent="L_FE">
+          <mxGeometry x="30" y="240" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="FE4" value="Activity feed&lt;br&gt;+ verify ↗ explorer links" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#2e7d32;" vertex="1" parent="L_FE">
+          <mxGeometry x="30" y="340" width="240" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- ============ UNICHAIN CHILDREN ============ -->
+        <mxCell id="EV" value="MaestroHook events&lt;br&gt;Deposit · Withdraw · BidPlaced&lt;br&gt;ManagerChanged · RentClaimed · Repositioned" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#2e7d32;align=center;" vertex="1" parent="L_UNI">
+          <mxGeometry x="180" y="40" width="500" height="95" as="geometry" />
+        </mxCell>
+
+        <mxCell id="HOOKS" value="MAESTRO HOOK — WETH / USDC pool @ live ETH price&lt;br&gt;MaestroHook.sol  +  HarbergerAuction.sol" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#b8860b;verticalAlign=top;align=center;fontStyle=1;spacingTop=10;" vertex="1" parent="L_UNI">
+          <mxGeometry x="30" y="210" width="720" height="600" as="geometry" />
+        </mxCell>
+
+        <!-- hook chips -->
+        <mxCell id="CH1" value="beforeSwap" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontColor=#b8860b;fontSize=11;" vertex="1" parent="HOOKS">
+          <mxGeometry x="25" y="60" width="150" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="CH2" value="afterSwap" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontColor=#b8860b;fontSize=11;" vertex="1" parent="HOOKS">
+          <mxGeometry x="185" y="60" width="150" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="CH3" value="beforeAddLiquidity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontColor=#b8860b;fontSize=11;" vertex="1" parent="HOOKS">
+          <mxGeometry x="345" y="60" width="180" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="CH4" value="beforeRemoveLiquidity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontColor=#b8860b;fontSize=11;" vertex="1" parent="HOOKS">
+          <mxGeometry x="535" y="60" width="180" height="34" as="geometry" />
+        </mxCell>
+
+        <!-- vault (green inner) -->
+        <mxCell id="VLT" value="Hook-owned liquidity vault (WETH/USDC)&lt;br&gt;&lt;br&gt;deposit() → mint shares&lt;br&gt;rentPerShare accrual → LPs&lt;br&gt;&lt;br&gt;Harberger auction:&lt;br&gt;bid → K = 10 delay → manager&lt;br&gt;manager pays rent every block&lt;br&gt;&lt;br&gt;Manager API:&lt;br&gt;repositionToPrice(price) →&lt;br&gt;band spans [spot , oracle]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#2e7d32;align=left;verticalAlign=top;spacingLeft=14;spacingTop=12;" vertex="1" parent="HOOKS">
+          <mxGeometry x="25" y="120" width="300" height="450" as="geometry" />
+        </mxCell>
+
+        <!-- hook point detail boxes -->
+        <mxCell id="HP1" value="beforeSwap  ← Hook Point 1&lt;br&gt;→ _poke: charge rent + promote winning bid&lt;br&gt;→ override swap fee (≤ F_MAX = 5%)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#b35f00;align=left;verticalAlign=top;spacingLeft=12;spacingTop=10;" vertex="1" parent="HOOKS">
+          <mxGeometry x="345" y="120" width="355" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="HP2" value="beforeAddLiquidity / beforeRemoveLiquidity  ← Hook Point 2&lt;br&gt;→ REVERT external liquidity&lt;br&gt;→ liquidity is hook-owned only" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#a23b39;align=left;verticalAlign=top;spacingLeft=12;spacingTop=10;" vertex="1" parent="HOOKS">
+          <mxGeometry x="345" y="250" width="355" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="HP3" value="afterSwap  ← Hook Point 3&lt;br&gt;→ distribute charged rent to LP shares&lt;br&gt;→ update rentPerShare / accounting" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#b35f00;align=left;verticalAlign=top;spacingLeft=12;spacingTop=10;" vertex="1" parent="HOOKS">
+          <mxGeometry x="345" y="380" width="355" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ManagerCallback (destination) -->
+        <mxCell id="MC" value="ManagerCallback — cross-chain callback (destination)&lt;br&gt;wins auction · repositionToPrice(price)&lt;br&gt;auth: authorizedSenderOnly + rvmIdOnly" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#2e7d32;align=center;" vertex="1" parent="L_UNI">
+          <mxGeometry x="160" y="850" width="460" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Swappers / arbitrageurs (Option A) -->
+        <mxCell id="SWAP" value="Swappers / Arbitrageurs&lt;br&gt;swap → moves spot toward the oracle band (Option A)&lt;br&gt;the LVR value they&apos;d skim → rent for LPs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#b35f00;align=center;" vertex="1" parent="L_UNI">
+          <mxGeometry x="160" y="975" width="460" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ============ REACTIVE CHILDREN ============ -->
+        <mxCell id="RSC" value="MaestroManagerRSC&lt;br&gt;&lt;br&gt;subscribe: Pyth PriceFeedUpdate&lt;br&gt;react():&lt;br&gt;  decode the LIVE price →&lt;br&gt;  forward it cross-chain&lt;br&gt;  emit Callback(repositionToPrice)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#2e7d32;align=left;verticalAlign=top;spacingLeft=14;spacingTop=14;" vertex="1" parent="L_REACT">
+          <mxGeometry x="45" y="60" width="290" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="PROXY" value="Callback proxy&lt;br&gt;[ SYSTEM 0x…fffFfF ]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#2e7d32;align=center;" vertex="1" parent="L_REACT">
+          <mxGeometry x="45" y="520" width="290" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ============ ETHEREUM SEPOLIA CHILD ============ -->
+        <mxCell id="PYTH" value="Pyth ETH/USD&lt;br&gt;PriceFeedUpdate event (live price)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#2e7d32;align=center;" vertex="1" parent="L_ETH">
+          <mxGeometry x="40" y="55" width="300" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- ============ EDGES ============ -->
+        <mxCell id="E1" value="PriceFeedUpdate (subscribed)" style="endArrow=block;html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#666666;fontColor=#333333;fontSize=11;" edge="1" parent="1" source="PYTH" target="RSC">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E2" value="emit Callback(repositionToPrice)" style="endArrow=block;html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#666666;fontColor=#333333;fontSize=11;" edge="1" parent="1" source="RSC" target="PROXY">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E3" value="cross-chain callback → repositionToPrice(price)" style="endArrow=block;html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#666666;fontColor=#333333;fontSize=11;" edge="1" parent="1" source="PROXY" target="MC">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E4" value="bid · repositionToPrice" style="endArrow=block;html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#666666;fontColor=#333333;fontSize=11;" edge="1" parent="1" source="MC" target="HOOKS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E5" value="deposit · read state" style="endArrow=block;html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#666666;fontColor=#333333;fontSize=11;" edge="1" parent="1" source="FE3" target="HOOKS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E6" value="emits event" style="endArrow=block;html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#666666;fontColor=#333333;fontSize=11;" edge="1" parent="1" source="HOOKS" target="EV">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E7" value="events → activity feed" style="endArrow=block;html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#666666;fontColor=#333333;fontSize=11;dashed=1;" edge="1" parent="1" source="EV" target="FE4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E8" value="swap → spot tracks the oracle price" style="endArrow=block;html=1;rounded=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#d79b00;fontColor=#b35f00;fontSize=11;" edge="1" parent="1" source="SWAP" target="HOOKS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

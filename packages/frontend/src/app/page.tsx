@@ -15,12 +15,12 @@ export default function Landing() {
             Live on Unichain Sepolia + Reactive Lasna
           </div>
           <h1 className="mx-auto max-w-4xl text-5xl font-bold leading-[1.02] tracking-tight md:text-7xl">
-            Liquidity that <span className="gradient-text">manages itself</span> — across chains.
+            Liquidity that <span className="gradient-text">manages itself</span>, across chains.
           </h1>
           <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
             Maestro is an auction-managed AMM on Uniswap v4. A continuous auction sells the right to
             manage the pool; the manager concentrates liquidity and pays{" "}
-            <span className="text-[var(--text)]">rent that flows to LPs</span> — and that manager is a
+            <span className="text-[var(--text)]">rent that flows to LPs</span>, and that manager is a
             Reactive Smart Contract running across chains, with no keeper.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
@@ -48,7 +48,7 @@ export default function Landing() {
               {[
                 "Turn impermanent loss into LP income",
                 "The arbitrageur now works for the LPs",
-                "Rent flows to LPs — every block",
+                "Rent flows to LPs, every block",
                 "No keepers. No bots. Just contracts.",
                 "Liquidity that follows the price",
                 "Recapture the value pools leak",
@@ -72,7 +72,7 @@ export default function Landing() {
         </h2>
         <p className="mt-4 max-w-2xl text-[var(--muted)]">
           Every time the market moves, the pool&apos;s price is briefly stale and arbitrageurs trade
-          against it — that leakage is <span className="text-[var(--text)]">Loss-Versus-Rebalancing
+          against it. That leakage is <span className="text-[var(--text)]">Loss-Versus-Rebalancing
           (LVR)</span>, and today 100% of it flows to searchers and block builders, not LPs.
         </p>
       </section>
@@ -81,9 +81,9 @@ export default function Landing() {
 
       {/* ── mechanism ── */}
       <section className="mx-auto max-w-6xl px-6 py-20">
-        <p className="text-sm text-[var(--accent)]">The mechanism — am-AMM</p>
+        <p className="text-sm text-[var(--accent)]">The mechanism: am-AMM</p>
         <h2 className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight">
-          Don&apos;t fight the arbitrageur. Auction the right to be one — and pay LPs.
+          Don&apos;t fight the arbitrageur. Auction the right to be one, and pay LPs.
         </h2>
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           <Feature
@@ -92,11 +92,11 @@ export default function Landing() {
           />
           <Feature
             title="Rent → LPs"
-            body="The manager sets the fee, captures the arbitrage, and pays rent every block — distributed to LP shareholders. Value recaptured, not leaked."
+            body="The manager sets the fee, captures the arbitrage, and pays rent every block, distributed to LP shareholders. Value recaptured, not leaked."
           />
           <Feature
             title="Concentrated liquidity"
-            body="The manager concentrates the pool's liquidity around the price for capital efficiency — repositioning as the market moves."
+            body="The manager concentrates the pool's liquidity around the price for capital efficiency, repositioning as the market moves."
           />
         </div>
       </section>
@@ -114,7 +114,7 @@ export default function Landing() {
             <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
               The am-AMM paper (Adams, Moallemi, Reynolds, Robinson) left the extension to
               concentrated liquidity explicitly <span className="text-[var(--text)]">unsolved</span>.
-              Maestro makes the manager govern a hook-owned vault&apos;s active tick range — the first
+              Maestro makes the manager govern a hook-owned vault&apos;s active tick range, the first
               concentrated-liquidity auction-managed AMM.
             </p>
           </div>
@@ -124,7 +124,7 @@ export default function Landing() {
             <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
               The manager is a <span className="text-[var(--text)]">Reactive Smart Contract</span>:
               it watches a Pyth price signal on Ethereum Sepolia and fires a cross-chain callback that
-              re-concentrates the Unichain pool — trustless, sequencer-independent, no keeper. It turns
+              re-concentrates the Unichain pool, trustless, sequencer-independent, no keeper. It turns
               am-AMM from a pro-searcher game into a passive LP product.
             </p>
           </div>

@@ -9,6 +9,7 @@ import {PoolKey} from "@uniswap/v4-core/src/types/PoolKey.sol";
 import {PoolId, PoolIdLibrary} from "@uniswap/v4-core/src/types/PoolId.sol";
 import {CurrencyLibrary, Currency} from "@uniswap/v4-core/src/types/Currency.sol";
 import {Constants} from "@uniswap/v4-core/test/utils/Constants.sol";
+import {StateLibrary} from "@uniswap/v4-core/src/libraries/StateLibrary.sol";
 import {MockERC20} from "solmate/src/test/utils/mocks/MockERC20.sol";
 import {MockPyth} from "@pythnetwork/pyth-sdk-solidity/MockPyth.sol";
 import {IPyth} from "@pythnetwork/pyth-sdk-solidity/IPyth.sol";
@@ -22,6 +23,7 @@ import {HarbergerAuction} from "../src/auction/HarbergerAuction.sol";
 contract OracleTest is BaseTest {
     using PoolIdLibrary for PoolKey;
     using CurrencyLibrary for Currency;
+    using StateLibrary for IPoolManager;
 
     Currency currency0;
     Currency currency1;
@@ -126,5 +128,71 @@ contract OracleTest is BaseTest {
     function test_setOracle_onlyOnce() public {
         vm.expectRevert(MaestroHook.OracleAlreadySet.selector);
         hook.setOracle(IPyth(address(mockPyth)), PRICE_ID, 60);
+    }
+
+    // ── OracleMath edge branches ──
+
+    function test_oracleTick_revertsNonPositivePrice() public {
+        _pushPrice(0, -8); // price 0 → OracleMath rejects
+        vm.expectRevert(bytes("OracleMath: price<=0"));
+        hook.oracleTick();
+    }
+
+    function test_oracleTick_highPrecisionExpo() public {
+        // expo < -18 exercises the `priceWad = p / 10^(-e)` branch (e < 0) in OracleMath.
+        _pushPrice(int64(1e18), -20); // 1e18 * 10^-20 = 0.01 → negative tick, no revert
+        assertLt(hook.oracleTick(), 0, "low ratio -> negative tick");
+    }
+
+    // ── the autonomous path: reposition around a price carried from the origin chain ──
+
+    /// @dev Mirrors `repositionToOracle` but the price is supplied by the (cross-chain) caller —
+    ///      exactly what the RSC → ManagerCallback → hook flow does on every Pyth update.
+    function test_repositionToPrice_tracksTruePrice() public {
+        _becomeManager(manager);
+
+        vm.prank(manager);
+        hook.repositionToPrice(110000000, -8, 120); // true price 1.10 (~tick 953), pool at tick 0
+
+        assertLe(hook.tickLower(), 0, "must straddle current tick");
+        assertGt(hook.tickUpper(), 900, "must extend toward the oracle price");
+        assertGt(hook.positionLiquidity(), 0);
+    }
+
+    function test_repositionToPrice_onlyManager() public {
+        _becomeManager(manager);
+
+        vm.prank(lp); // not manager
+        vm.expectRevert(HarbergerAuction.NotManager.selector);
+        hook.repositionToPrice(110000000, -8, 120);
+    }
+
+    /// @notice Option A: after the band follows the oracle, a real arbitrage swap moves the pool's
+    ///         spot price toward the true price. This is where the LP rent value actually comes from.
+    function test_arbitrage_movesSpotTowardOracle() public {
+        _becomeManager(manager);
+
+        vm.prank(manager);
+        hook.repositionToPrice(110000000, -8, 120); // band now spans ~[0 .. 1080]
+
+        (, int24 spotBefore,,) = poolManager.getSlot0(poolId);
+
+        // Arbitrageur buys token0 with token1 (zeroForOne = false) → pushes the price up toward 1.10.
+        MockERC20(Currency.unwrap(currency0)).mint(address(this), 50e18);
+        MockERC20(Currency.unwrap(currency1)).mint(address(this), 50e18);
+        MockERC20(Currency.unwrap(currency0)).approve(address(swapRouter), type(uint256).max);
+        MockERC20(Currency.unwrap(currency1)).approve(address(swapRouter), type(uint256).max);
+        swapRouter.swapExactTokensForTokens({
+            amountIn: 5e18,
+            amountOutMin: 0,
+            zeroForOne: false,
+            poolKey: poolKey,
+            hookData: Constants.ZERO_BYTES,
+            receiver: address(this),
+            deadline: block.timestamp + 1
+        });
+
+        (, int24 spotAfter,,) = poolManager.getSlot0(poolId);
+        assertGt(spotAfter, spotBefore, "arbitrage should move spot up toward the oracle price");
     }
 }

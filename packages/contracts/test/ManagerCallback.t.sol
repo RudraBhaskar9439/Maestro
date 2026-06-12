@@ -95,4 +95,40 @@ contract ManagerCallbackTest is BaseTest {
         vm.expectRevert(bytes("Authorized sender only"));
         mgr.repositionTo(address(this), -600, 600);
     }
+
+    // ── edge cases ──
+
+    function test_authorizedCallback_repositionToPrice() public {
+        // Authorized proxy forwards a live price; the hook re-concentrates around it.
+        vm.prank(callbackProxy);
+        mgr.repositionToPrice(address(this), 1e8); // price 1.0 → band straddles tick 0
+        assertLe(hook.tickLower(), 0, "band must straddle the price");
+        assertGe(hook.tickUpper(), 0);
+        assertGt(hook.positionLiquidity(), 0);
+    }
+
+    function test_repositionToPrice_unauthorizedReverts() public {
+        vm.prank(makeAddr("attacker"));
+        vm.expectRevert(bytes("Authorized sender only"));
+        mgr.repositionToPrice(address(this), 1e8);
+    }
+
+    function test_enterAuction_revertsNotOwner() public {
+        vm.prank(makeAddr("notOwner"));
+        vm.expectRevert(ManagerCallback.OnlyOwner.selector);
+        mgr.enterAuction(RENT, BOND);
+    }
+
+    function test_withdrawRefund_revertsNotOwner() public {
+        vm.prank(makeAddr("notOwner"));
+        vm.expectRevert(ManagerCallback.OnlyOwner.selector);
+        mgr.withdrawRefund();
+    }
+
+    function test_updateFee_revertsRvmIdMismatch() public {
+        // Authorized sender, but the wrong ReactVM id must be rejected.
+        vm.prank(callbackProxy);
+        vm.expectRevert();
+        mgr.updateFee(makeAddr("wrongRvm"), 10_000);
+    }
 }

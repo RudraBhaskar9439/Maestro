@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 -10 1000 580" width="1000" height="580" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+<rect x="40" y="-10" width="1000" height="580" fill="#ffffff"/>
+<rect x="80" y="120" width="220" height="90" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+<rect x="80" y="280" width="220" height="90" rx="10" fill="#ffec99" stroke="#e8590c" stroke-width="2"/>
+<rect x="80" y="440" width="220" height="90" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<rect x="420" y="280" width="220" height="80" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+<rect x="420" y="400" width="220" height="80" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+<rect x="760" y="340" width="240" height="90" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<rect x="420" y="120" width="220" height="80" rx="10" fill="#ffec99" stroke="#e8590c" stroke-width="2"/>
+<line x1="190" y1="210" x2="190" y2="280" stroke="#495057" stroke-width="2"/>
+<polyline points="185.21537912477646,270.0950818741206 190,280 194.78462087522354,270.0950818741206" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="190" y1="370" x2="190" y2="440" stroke="#495057" stroke-width="2"/>
+<polyline points="185.21537912477646,430.0950818741206 190,440 194.78462087522354,430.0950818741206" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="300" y1="485" x2="420" y2="320" stroke="#495057" stroke-width="2"/>
+<polyline points="418.0437030420727,330.8246432833791 420,320 410.30471193906556,325.1962861175557" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="300" y1="485" x2="420" y2="440" stroke="#495057" stroke-width="2"/>
+<polyline points="412.4057287057107,447.95782907008777 420,440 409.0457436089024,438.9978688119323" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="640" y1="320" x2="760" y2="385" stroke="#495057" stroke-width="2"/>
+<polyline points="749.0118507676845,384.48953310747595 760,385 753.569519357735,376.0753757104596" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="640" y1="440" x2="760" y2="385" stroke="#495057" stroke-width="2"/>
+<polyline points="752.989322183701,393.47646132274866 760,385 749.0022525325289,384.7774002656459" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="420" y1="160" x2="300" y2="165" stroke="#495057" stroke-width="2"/>
+<polyline points="309.6971449125612,159.80717990444617 300,165 310.0955176591149,169.368125821734" fill="none" stroke="#495057" stroke-width="2"/>
+<text x="300" y="54" fill="#1e1e1e" font-size="24" font-weight="700" text-anchor="start">Harberger Auction — Manager Lifecycle</text>
+<text x="190" y="153.75" fill="#1971c2" font-size="18" text-anchor="middle" dominant-baseline="central">bid(rentRate, deposit)</text>
+<text x="190" y="176.25" fill="#1971c2" font-size="18" text-anchor="middle" dominant-baseline="central">anyone can bid</text>
+<text x="190" y="313.75" fill="#e8590c" font-size="18" text-anchor="middle" dominant-baseline="central">K-block delay</text>
+<text x="190" y="336.25" fill="#e8590c" font-size="18" text-anchor="middle" dominant-baseline="central">censorship resistance</text>
+<text x="190" y="473.75" fill="#2f9e44" font-size="18" text-anchor="middle" dominant-baseline="central">becomes Manager</text>
+<text x="190" y="496.25" fill="#2f9e44" font-size="18" text-anchor="middle" dominant-baseline="central">pays rent every block</text>
+<text x="530" y="320" fill="#1971c2" font-size="18" text-anchor="middle" dominant-baseline="central">setFee(f ≤ f_max)</text>
+<text x="530" y="440" fill="#1971c2" font-size="18" text-anchor="middle" dominant-baseline="central">reposition(band)</text>
+<text x="880" y="373.75" fill="#2f9e44" font-size="18" text-anchor="middle" dominant-baseline="central">rent → LPs</text>
+<text x="880" y="396.25" fill="#2f9e44" font-size="18" text-anchor="middle" dominant-baseline="central">(rentPerShare accrual)</text>
+<text x="530" y="148.75" fill="#e8590c" font-size="18" text-anchor="middle" dominant-baseline="central">higher bid arrives</text>
+<text x="530" y="171.25" fill="#e8590c" font-size="18" text-anchor="middle" dominant-baseline="central">→ manager replaced</text>
+<text x="141" y="396" fill="#495057" font-size="13" text-anchor="start">after K blocks</text>
+<text x="321.5" y="153.5" fill="#495057" font-size="13" text-anchor="start">outbid loop</text>
+</svg>

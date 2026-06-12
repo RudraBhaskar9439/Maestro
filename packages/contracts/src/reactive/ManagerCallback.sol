@@ -24,7 +24,12 @@ contract ManagerCallback is AbstractCallback {
     PoolKey public poolKey;
     address public immutable owner;
 
+    /// @dev Pyth ETH/USD exponent (price is `price * 10^-8`) and the concentration half-width (tick units).
+    int32 public constant PRICE_EXPO = -8;
+    int24 public constant HALF_WIDTH = 600;
+
     event AutoRepositioned(int24 tickLower, int24 tickUpper);
+    event AutoRepositionedToPrice(int64 price);
     event AutoFeeUpdated(uint24 fee);
 
     error OnlyOwner();
@@ -68,6 +73,16 @@ contract ManagerCallback is AbstractCallback {
     {
         hook.reposition(newLower, newUpper);
         emit AutoRepositioned(newLower, newUpper);
+    }
+
+    /// @notice Reposition the pool around a live price carried from the origin chain. The autonomous path:
+    ///         the Reactive contract observes the Pyth ETH/USD price and forwards it here, and the hook
+    ///         re-concentrates liquidity to track that price — no keeper, no local oracle read.
+    /// @param rvmId The originating ReactVM id (validated against this contract's bound id).
+    /// @param price The Pyth ETH/USD price (exponent PRICE_EXPO).
+    function repositionToPrice(address rvmId, int64 price) external authorizedSenderOnly rvmIdOnly(rvmId) {
+        hook.repositionToPrice(price, PRICE_EXPO, HALF_WIDTH);
+        emit AutoRepositionedToPrice(price);
     }
 
     /// @notice Re-price the swap fee. Called by the Reactive callback proxy.

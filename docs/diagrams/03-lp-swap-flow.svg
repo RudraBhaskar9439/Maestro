@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 -10 920 510" width="920" height="510" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+<rect x="40" y="-10" width="920" height="510" fill="#ffffff"/>
+<rect x="80" y="200" width="200" height="90" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<rect x="360" y="200" width="240" height="100" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+<rect x="360" y="380" width="240" height="80" rx="10" fill="#e9ecef" stroke="#1e1e1e" stroke-width="2"/>
+<rect x="80" y="40" width="200" height="80" rx="10" fill="#ffec99" stroke="#e8590c" stroke-width="2"/>
+<rect x="680" y="80" width="240" height="90" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2"/>
+<rect x="680" y="300" width="240" height="90" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<line x1="280" y1="245" x2="360" y2="250" stroke="#495057" stroke-width="2"/>
+<polyline points="349.8159144747054,254.15745138438015 360,250 350.41282737490286,244.60684498122035" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="480" y1="300" x2="480" y2="380" stroke="#495057" stroke-width="2"/>
+<polyline points="475.21537912477646,370.0950818741206 480,380 484.78462087522354,370.0950818741206" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="280" y1="80" x2="360" y2="250" stroke="#495057" stroke-width="2"/>
+<polyline points="351.4533007660669,243.0751222245669 360,250 360.111729667754,239.0005674473024" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="600" y1="250" x2="680" y2="125" stroke="#495057" stroke-width="2"/>
+<polyline points="678.6906665976827,135.92179683209574 680,125 670.630767945265,130.76346169454843" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="800" y1="170" x2="800" y2="300" stroke="#495057" stroke-width="2"/>
+<polyline points="795.2153791247765,290.0950818741206 800,300 804.7846208752235,290.0950818741206" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="600" y1="420" x2="680" y2="345" stroke="#495057" stroke-width="2"/>
+<polyline points="676.0463927258791,355.264939820672 680,345 669.5015947205399,348.2838219483103" fill="none" stroke="#495057" stroke-width="2"/>
+<text x="300" y="54" fill="#1e1e1e" font-size="24" font-weight="700" text-anchor="start">LP &amp; Swap Value Flow</text>
+<text x="180" y="233.75" fill="#2f9e44" font-size="18" text-anchor="middle" dominant-baseline="central">LP</text>
+<text x="180" y="256.25" fill="#2f9e44" font-size="18" text-anchor="middle" dominant-baseline="central">deposit(amt0, amt1)</text>
+<text x="480" y="237.5" fill="#1971c2" font-size="20" text-anchor="middle" dominant-baseline="central">MaestroHook vault</text>
+<text x="480" y="262.5" fill="#1971c2" font-size="20" text-anchor="middle" dominant-baseline="central">hook-owned liquidity</text>
+<text x="480" y="420" fill="#1e1e1e" font-size="18" text-anchor="middle" dominant-baseline="central">LP shares minted</text>
+<text x="180" y="80" fill="#e8590c" font-size="18" text-anchor="middle" dominant-baseline="central">Swapper</text>
+<text x="800" y="113.75" fill="#6741d9" font-size="18" text-anchor="middle" dominant-baseline="central">dynamic fee</text>
+<text x="800" y="136.25" fill="#6741d9" font-size="18" text-anchor="middle" dominant-baseline="central">set by manager</text>
+<text x="800" y="333.75" fill="#2f9e44" font-size="18" text-anchor="middle" dominant-baseline="central">rent + fees</text>
+<text x="800" y="356.25" fill="#2f9e44" font-size="18" text-anchor="middle" dominant-baseline="central">→ claimable by LPs</text>
+<text x="306" y="156" fill="#495057" font-size="13" text-anchor="start">swap</text>
+<text x="605" y="178.5" fill="#495057" font-size="13" text-anchor="start">beforeSwap</text>
+<text x="601.5" y="373.5" fill="#495057" font-size="13" text-anchor="start">claimRent()</text>
+</svg>

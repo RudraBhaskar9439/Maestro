@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { createPublicClient, http, decodeEventLog, formatUnits } from "viem";
 import { unichainSepolia } from "../lib/chain";
 import { MAESTRO, maestroHookAbi } from "../lib/maestro";
+import { txUrl } from "../lib/explorer";
 
 const client = createPublicClient({ chain: unichainSepolia, transport: http() });
 
-type Item = { block: bigint; tag: string; label: string; detail: string };
+type Item = { block: bigint; tag: string; label: string; detail: string; tx: string };
 
 function short(a: string) {
   return `${a.slice(0, 6)}…${a.slice(-4)}`;
@@ -22,22 +23,22 @@ function tok(v: bigint) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function format(name: string, a: any, block: bigint): Item | null {
+function format(name: string, a: any, block: bigint, tx: string): Item | null {
   switch (name) {
     case "Deposit":
-      return { block, tag: "LP", label: "Deposit", detail: `${units(a.shares)} shares` };
+      return { block, tx, tag: "LP", label: "Deposit", detail: `${units(a.shares)} shares` };
     case "Withdraw":
-      return { block, tag: "LP", label: "Withdraw", detail: `${units(a.shares)} shares` };
+      return { block, tx, tag: "LP", label: "Withdraw", detail: `${units(a.shares)} shares` };
     case "RentClaimed":
-      return { block, tag: "LP", label: "Claim rent", detail: `${tok(a.amount)}` };
+      return { block, tx, tag: "LP", label: "Claim rent", detail: `${tok(a.amount)}` };
     case "Repositioned":
-      return { block, tag: "MGR", label: "Reposition", detail: `[${a.tickLower}, ${a.tickUpper}]` };
+      return { block, tx, tag: "MGR", label: "Reposition", detail: `[${a.tickLower}, ${a.tickUpper}]` };
     case "RepositionedToOracle":
-      return { block, tag: "MGR", label: "Reposition (oracle)", detail: `[${a.tickLower}, ${a.tickUpper}]` };
+      return { block, tx, tag: "MGR", label: "Reposition (oracle)", detail: `[${a.tickLower}, ${a.tickUpper}]` };
     case "ManagerChanged":
-      return { block, tag: "AUCTION", label: "New manager", detail: short(a.newManager) };
+      return { block, tx, tag: "AUCTION", label: "New manager", detail: short(a.newManager) };
     case "BidPlaced":
-      return { block, tag: "AUCTION", label: "Bid placed", detail: `${short(a.bidder)} · rent ${tok(a.rentRate)}` };
+      return { block, tx, tag: "AUCTION", label: "Bid placed", detail: `${short(a.bidder)} · rent ${tok(a.rentRate)}` };
     default:
       return null;
   }
@@ -58,7 +59,7 @@ export function ActivityFeed() {
         for (const log of logs) {
           try {
             const ev = decodeEventLog({ abi: maestroHookAbi, data: log.data, topics: log.topics });
-            const it = format(ev.eventName as string, ev.args, log.blockNumber ?? BigInt(0));
+            const it = format(ev.eventName as string, ev.args, log.blockNumber ?? BigInt(0), log.transactionHash ?? "");
             if (it) out.push(it);
           } catch {
             /* skip non-matching logs */
@@ -97,7 +98,19 @@ export function ActivityFeed() {
           </span>
           <span className="text-[var(--text)]">{it.label}</span>
           <span className="mono ml-auto text-xs text-[var(--muted)]">{it.detail}</span>
-          <span className="mono w-24 text-right text-[11px] text-[var(--muted)]">#{it.block.toLocaleString()}</span>
+          {it.tx ? (
+            <a
+              href={txUrl(it.tx)}
+              target="_blank"
+              rel="noreferrer"
+              title="view transaction"
+              className="mono w-24 text-right text-[11px] text-[var(--accent)] hover:underline"
+            >
+              #{it.block.toLocaleString()} ↗
+            </a>
+          ) : (
+            <span className="mono w-24 text-right text-[11px] text-[var(--muted)]">#{it.block.toLocaleString()}</span>
+          )}
         </div>
       ))}
     </div>

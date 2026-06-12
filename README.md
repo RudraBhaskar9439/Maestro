@@ -11,6 +11,8 @@
 [![Pyth](https://img.shields.io/badge/Oracle-Pyth-7c3aed)](https://pyth.network)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.30-363636?logo=solidity)](https://soliditylang.org)
 [![Foundry](https://img.shields.io/badge/Built%20with-Foundry-000000)](https://getfoundry.sh)
+[![Tests](https://img.shields.io/badge/tests-43%20passing-2f9e44)](packages/contracts/test)
+[![Coverage](https://img.shields.io/badge/coverage-97%25%20lines-2f9e44)](#testing)
 [![Next.js](https://img.shields.io/badge/Frontend-Next.js%2016-000000?logo=nextdotjs)](https://nextjs.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22d3ee.svg)](./LICENSE)
 

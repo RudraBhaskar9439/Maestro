@@ -40,5 +40,22 @@ export function LiveRent({
   }, []);
 
   if (display === null) return <>—</>;
-  return <>{display.toLocaleString(undefined, { minimumFractionDigits: 6, maximumFractionDigits: 6 })}</>;
+
+  // Split into a stable head (integer + first 4 decimals) and a fast-moving tail
+  // (last 2 decimals). The tail is dimmed + smaller so the live motion reads as a
+  // subtle shimmer instead of a flickering strobe; tabular-nums keeps width fixed.
+  const s = display.toLocaleString("en-US", {
+    minimumFractionDigits: 6,
+    maximumFractionDigits: 6,
+  });
+  const [intPart, frac = ""] = s.split(".");
+  const fracHead = frac.slice(0, 4);
+  const fracTail = frac.slice(4);
+
+  return (
+    <span className="tabular-nums">
+      {intPart}.{fracHead}
+      <span className="text-[0.62em] opacity-45">{fracTail}</span>
+    </span>
+  );
 }

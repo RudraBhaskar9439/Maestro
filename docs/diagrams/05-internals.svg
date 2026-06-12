@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="260 -10 1680 1170" width="1680" height="1170" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+<rect x="260" y="-10" width="1680" height="1170" fill="#ffffff"/>
+<rect x="300" y="96" width="300" height="56" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<rect x="640" y="96" width="300" height="56" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2"/>
+<rect x="980" y="96" width="340" height="56" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+<rect x="340" y="200" width="250" height="60" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<rect x="700" y="200" width="290" height="60" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2"/>
+<rect x="300" y="300" width="360" height="150" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.5"/>
+<rect x="300" y="340" width="360" height="2" rx="10" fill="#1971c2" stroke="#1971c2" stroke-width="0"/>
+<rect x="700" y="300" width="360" height="150" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.5"/>
+<rect x="700" y="340" width="360" height="2" rx="10" fill="#1971c2" stroke="#1971c2" stroke-width="0"/>
+<rect x="1100" y="300" width="360" height="170" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2.5"/>
+<rect x="1100" y="340" width="360" height="2" rx="10" fill="#1971c2" stroke="#1971c2" stroke-width="0"/>
+<rect x="1520" y="300" width="380" height="250" rx="10" fill="#e9ecef" stroke="#1e1e1e" stroke-width="2.5"/>
+<rect x="1520" y="340" width="380" height="2" rx="10" fill="#1e1e1e" stroke="#1e1e1e" stroke-width="0"/>
+<rect x="300" y="520" width="560" height="220" rx="10" fill="#ffec99" stroke="#e8590c" stroke-width="2.5"/>
+<rect x="300" y="560" width="560" height="2" rx="10" fill="#e8590c" stroke="#e8590c" stroke-width="0"/>
+<rect x="900" y="520" width="560" height="180" rx="10" fill="#ffec99" stroke="#e8590c" stroke-width="2.5"/>
+<rect x="900" y="560" width="560" height="2" rx="10" fill="#e8590c" stroke="#e8590c" stroke-width="0"/>
+<rect x="300" y="780" width="560" height="200" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2.5"/>
+<rect x="300" y="820" width="560" height="2" rx="10" fill="#2f9e44" stroke="#2f9e44" stroke-width="0"/>
+<rect x="900" y="780" width="560" height="210" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2.5"/>
+<rect x="900" y="820" width="560" height="2" rx="10" fill="#6741d9" stroke="#6741d9" stroke-width="0"/>
+<rect x="300" y="1030" width="560" height="90" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<rect x="900" y="1030" width="560" height="90" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+<line x1="600" y1="124" x2="640" y2="124" stroke="#495057" stroke-width="2"/>
+<polyline points="630.0950818741205,128.78462087522354 640,124 630.0950818741205,119.21537912477646" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="940" y1="124" x2="980" y2="124" stroke="#495057" stroke-width="2"/>
+<polyline points="970.0950818741205,128.78462087522354 980,124 970.0950818741205,119.21537912477646" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="465" y1="260" x2="480" y2="300" stroke="#495057" stroke-width="2"/>
+<polyline points="472.04217092991223,292.4057287057107 480,300 481.0021311880677,289.0457436089024" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="845" y1="260" x2="880" y2="300" stroke="#495057" stroke-width="2"/>
+<polyline points="869.8767716098467,295.696484348722 880,300 877.0783599372493,289.3950945622448" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="1150" y1="152" x2="1280" y2="300" stroke="#495057" stroke-width="2"/>
+<polyline points="1269.868569434047,295.7158297551013 1280,300 1277.058107605616,289.4006948746691" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="980" y1="124" x2="1060" y2="375" stroke="#495057" stroke-width="2"/>
+<polyline points="1052.4334648197691,367.0157940052671 1060,375 1061.5508097143813,364.10986734562977" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="480" y1="450" x2="580" y2="520" stroke="#495057" stroke-width="2"/>
+<polyline points="569.1417749971565,518.2396165793712 580,520 574.6293748051473,510.40018828224146" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="700" y1="375" x2="860" y2="630" stroke="#495057" stroke-width="2"/>
+<polyline points="850.682744864164,624.1528847511156 860,630 858.7885040487876,619.0669182039007" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="1280" y1="470" x2="1180" y2="520" stroke="#495057" stroke-width="2"/>
+<polyline points="1186.7194805917015,511.290890942367 1180,520 1190.9989756011273,519.8498809612184" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="580" y1="740" x2="580" y2="780" stroke="#495057" stroke-width="2"/>
+<polyline points="575.2153791247765,770.0950818741205 580,780 584.7846208752235,770.0950818741205" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="860" y1="630" x2="900" y2="885" stroke="#495057" stroke-width="2"/>
+<polyline points="893.7382365484399,875.9561999979707 900,885 903.191877326436,874.4732759543634" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="900" y1="610" x2="860" y2="880" stroke="#495057" stroke-width="2"/>
+<polyline points="856.7185889537267,869.5008409124638 860,880 866.1845160253702,870.9032004786332" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="1180" y1="700" x2="1180" y2="1030" stroke="#495057" stroke-width="2"/>
+<polyline points="1175.2153791247765,1020.0950818741205 1180,1030 1184.7846208752235,1020.0950818741205" fill="none" stroke="#495057" stroke-width="2"/>
+<text x="560" y="60" fill="#1e1e1e" font-size="30" font-weight="700" text-anchor="start">Maestro — Internal Hook Architecture</text>
+<text x="470" y="87" fill="#868e96" font-size="15" text-anchor="start">How the contracts work internally: callers → public API → engine → state → Uniswap v4</text>
+<text x="450" y="124" fill="#2f9e44" font-size="14" text-anchor="middle" dominant-baseline="central">Pyth @ Eth Sepolia</text>
+<text x="790" y="124" fill="#6741d9" font-size="13" text-anchor="middle" dominant-baseline="central">MaestroManagerRSC @ Lasna</text>
+<text x="1150" y="124" fill="#1971c2" font-size="13" text-anchor="middle" dominant-baseline="central">ManagerCallback (Unichain, dest)</text>
+<text x="465" y="230" fill="#2f9e44" font-size="16" text-anchor="middle" dominant-baseline="central">LP</text>
+<text x="845" y="230" fill="#6741d9" font-size="15" text-anchor="middle" dominant-baseline="central">Bidder / Manager</text>
+<text x="316" y="329" fill="#1971c2" font-size="16" text-anchor="start">LP API</text>
+<text x="316" y="365" fill="#212529" font-size="13" text-anchor="start">deposit(amt0, amt1) → mint shares</text>
+<text x="316" y="386" fill="#212529" font-size="13" text-anchor="start">withdraw(shares) → burn + return</text>
+<text x="316" y="407" fill="#212529" font-size="13" text-anchor="start">claimRent() → pay pending rent</text>
+<text x="716" y="329" fill="#1971c2" font-size="16" text-anchor="start">Auction API  (HarbergerAuction)</text>
+<text x="716" y="365" fill="#212529" font-size="13" text-anchor="start">bid(rentRate, deposit)</text>
+<text x="716" y="386" fill="#212529" font-size="13" text-anchor="start">setFee(fee ≤ F_MAX) · topUp(amt)</text>
+<text x="716" y="407" fill="#212529" font-size="13" text-anchor="start">poke() · withdraw() refunds</text>
+<text x="1116" y="329" fill="#1971c2" font-size="16" text-anchor="start">Manager API</text>
+<text x="1116" y="365" fill="#212529" font-size="13" text-anchor="start">reposition(lower, upper)</text>
+<text x="1116" y="386" fill="#212529" font-size="13" text-anchor="start">repositionToOracle(halfWidth)</text>
+<text x="1116" y="407" fill="#212529" font-size="13" text-anchor="start">reads OracleMath + Pyth</text>
+<text x="1536" y="329" fill="#1e1e1e" font-size="16" text-anchor="start">Hook callbacks  (PoolManager → hook)</text>
+<text x="1536" y="365" fill="#212529" font-size="13" text-anchor="start">beforeInitialize: capture poolKey</text>
+<text x="1536" y="386" fill="#212529" font-size="13" text-anchor="start">beforeAddLiquidity → REVERT</text>
+<text x="1536" y="407" fill="#212529" font-size="13" text-anchor="start">beforeRemoveLiquidity → REVERT</text>
+<text x="1536" y="428" fill="#212529" font-size="13" text-anchor="start">  (liquidity is hook-owned only)</text>
+<text x="1536" y="449" fill="#212529" font-size="13" text-anchor="start">beforeSwap → _poke + fee override</text>
+<text x="1536" y="470" fill="#212529" font-size="13" text-anchor="start">afterSwap → distribute rent to LPs</text>
+<text x="316" y="549" fill="#e8590c" font-size="16" text-anchor="start">_poke(id) — rent + auction engine</text>
+<text x="316" y="585" fill="#212529" font-size="13" text-anchor="start">charge rent = rentRate × Δblocks</text>
+<text x="316" y="606" fill="#212529" font-size="13" text-anchor="start">→ lease.deposit −= rent</text>
+<text x="316" y="627" fill="#212529" font-size="13" text-anchor="start">→ totalRentCharged += rent</text>
+<text x="316" y="648" fill="#212529" font-size="13" text-anchor="start">→ rentPerShare += rent / Σshares  (if Σ&gt;0)</text>
+<text x="316" y="669" fill="#212529" font-size="13" text-anchor="start">promote pending bid when block ≥ bid+K</text>
+<text x="916" y="549" fill="#e8590c" font-size="16" text-anchor="start">unlockCallback  (poolManager.unlock)</text>
+<text x="916" y="585" fill="#212529" font-size="13" text-anchor="start">mode: DEPOSIT / WITHDRAW / REPOSITION</text>
+<text x="916" y="606" fill="#212529" font-size="13" text-anchor="start">poolManager.modifyLiquidity(band, Δliq)</text>
+<text x="916" y="627" fill="#212529" font-size="13" text-anchor="start">settle() pays in · take() pulls out</text>
+<text x="316" y="809" fill="#2f9e44" font-size="16" text-anchor="start">Vault state  (MaestroHook)</text>
+<text x="316" y="845" fill="#212529" font-size="13" text-anchor="start">positionLiquidity · tickLower · tickUpper</text>
+<text x="316" y="866" fill="#212529" font-size="13" text-anchor="start">totalShares · sharesOf[addr]</text>
+<text x="316" y="887" fill="#212529" font-size="13" text-anchor="start">rentPerShare · rentDebt[addr]</text>
+<text x="316" y="908" fill="#212529" font-size="13" text-anchor="start">poolKey · initialized</text>
+<text x="916" y="809" fill="#6741d9" font-size="16" text-anchor="start">Auction state — leases[poolId]</text>
+<text x="916" y="845" fill="#212529" font-size="13" text-anchor="start">manager · rentRate · deposit · fee</text>
+<text x="916" y="866" fill="#212529" font-size="13" text-anchor="start">pendingBidder · pendingRent · pendingDeposit</text>
+<text x="916" y="887" fill="#212529" font-size="13" text-anchor="start">pendingActiveBlock (= bidBlock + K)</text>
+<text x="916" y="908" fill="#212529" font-size="13" text-anchor="start">accruedRent · totalRentCharged</text>
+<text x="916" y="929" fill="#212529" font-size="13" text-anchor="start">K = 10 · F_MAX = 5% · DEFAULT_FEE = 0.30%</text>
+<text x="580" y="1075" fill="#2f9e44" font-size="14" text-anchor="middle" dominant-baseline="central">Pyth + OracleMath — price → sqrtPriceX96 → tick</text>
+<text x="1180" y="1075" fill="#1971c2" font-size="15" text-anchor="middle" dominant-baseline="central">Uniswap v4 PoolManager (singleton)</text>
+<text x="567.5" y="115" fill="#495057" font-size="13" text-anchor="start">PriceFeedUpdate</text>
+<text x="890" y="115" fill="#495057" font-size="13" text-anchor="start">cross-chain callback</text>
+<text x="1173" y="217" fill="#495057" font-size="13" text-anchor="start">repositionTo</text>
+<text x="1009.5" y="240.5" fill="#495057" font-size="13" text-anchor="start">bid</text>
+<text x="538" y="751" fill="#495057" font-size="13" text-anchor="start">rentPerShare</text>
+<text x="824" y="748.5" fill="#495057" font-size="13" text-anchor="start">charge · promote</text>
+<text x="820.5" y="736" fill="#495057" font-size="13" text-anchor="start">positionLiquidity</text>
+<text x="1127.5" y="856" fill="#495057" font-size="13" text-anchor="start">modifyLiquidity</text>
+</svg>

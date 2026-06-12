@@ -4,12 +4,15 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAccount, useBlockNumber, useConnect, useDisconnect, useReadContracts, useSwitchChain } from "wagmi";
 import { formatUnits } from "viem";
-import { MAESTRO, maestroHookAbi } from "../../lib/maestro";
+import { MAESTRO, maestroHookAbi, TOKEN0, TOKEN1 } from "../../lib/maestro";
 import { LpActions } from "../../components/LpActions";
 import { ConcentrationChart } from "../../components/ConcentrationChart";
 import { LiveRent } from "../../components/LiveRent";
 import { ActivityFeed } from "../../components/ActivityFeed";
+import { SystemMap } from "../../components/SystemMap";
+import { useEthUsd } from "../../components/LivePrice";
 import { unichainSepolia } from "../../lib/chain";
+import { addressUrl } from "../../lib/explorer";
 
 const hook = { address: MAESTRO.hook, abi: maestroHookAbi } as const;
 
@@ -32,11 +35,59 @@ function fmtToken(v: bigint | undefined) {
   if (n < 0.0001) return n.toExponential(2);
   return n.toLocaleString(undefined, { maximumFractionDigits: 6 });
 }
+// Small per-block rates, written as a plain decimal (no scientific notation).
+function fmtRate(v: bigint | undefined) {
+  if (v === undefined) return "—";
+  const n = Number(formatUnits(v, 18));
+  if (n === 0) return "0";
+  if (n < 1) return n.toFixed(8).replace(/0+$/, "").replace(/\.$/, "");
+  return n.toLocaleString(undefined, { maximumFractionDigits: 6 });
+}
+// Per-block rate scaled to a human period (~1s blocks on Unichain → 86,400 blocks/day).
+function perDay(v: bigint | undefined) {
+  if (v === undefined) return "—";
+  const n = Number(formatUnits(v, 18)) * 86_400;
+  if (n === 0) return "0";
+  return n.toLocaleString(undefined, { maximumFractionDigits: n < 1 ? 4 : 2 });
+}
 const ZERO = "0x0000000000000000000000000000000000000000";
 
 export default function Dashboard() {
   const { address, isConnected, chainId } = useAccount();
-  const { connect, connectors } = useConnect();
+  const { connectAsync, connectors } = useConnect();
+  const [connectErr, setConnectErr] = useState<string | null>(null);
+  const [connecting, setConnecting] = useState(false);
+
+  // One button per installed wallet (EIP-6963), deduped by name. Falls back to a generic option.
+  const wallets = (() => {
+    const seen = new Set<string>();
+    const out = connectors.filter((c) => {
+      const k = c.name.toLowerCase();
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+    return out.length ? out : connectors;
+  })();
+
+  async function connectWith(target: (typeof connectors)[number]) {
+    setConnectErr(null);
+    setConnecting(true);
+    try {
+      await Promise.race([
+        connectAsync({ connector: target }),
+        new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 25000)),
+      ]);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      if (/reject|denied/i.test(msg)) setConnectErr("Rejected, approve in your wallet");
+      else if (/timeout/i.test(msg)) setConnectErr("No response, open the wallet & approve");
+      else if (/not found|no provider|not install/i.test(msg)) setConnectErr(`${target.name} unavailable, unlock it`);
+      else setConnectErr(msg.split("\n")[0].slice(0, 70));
+    } finally {
+      setConnecting(false);
+    }
+  }
   const { disconnect } = useDisconnect();
   const { switchChain } = useSwitchChain();
 
@@ -85,6 +136,7 @@ export default function Dashboard() {
 
   // Live, block-driven rent owed to LPs: recorded total + rent accruing since the last charge.
   const { data: blockNumber } = useBlockNumber({ watch: true, chainId: unichainSepolia.id });
+  const ethUsd = useEthUsd();
   let liveRent = lease?.totalRentCharged;
   if (lease && hasManager && blockNumber && blockNumber > lease.lastChargeBlock) {
     liveRent = lease.totalRentCharged + lease.rentRate * (blockNumber - lease.lastChargeBlock);
@@ -102,6 +154,7 @@ export default function Dashboard() {
           <nav className="hidden gap-6 text-sm text-[var(--muted)] md:flex">
             <a href="#pool" className="hover:text-[var(--text)]">Pool</a>
             <a href="#auction" className="hover:text-[var(--text)]">Auction</a>
+            <a href="#contracts" className="hover:text-[var(--text)]">Contracts</a>
             <Link href="/docs" className="hover:text-[var(--text)]">Docs</Link>
           </nav>
         </div>
@@ -126,12 +179,21 @@ export default function Dashboard() {
               {short(address)}
             </button>
           ) : (
-            <button
-              onClick={() => connect({ connector: connectors[0] })}
-              className="rounded-md bg-[var(--accent)] px-3 py-1.5 font-medium text-black hover:opacity-90"
-            >
-              Connect Wallet
-            </button>
+            <div className="flex flex-col items-end gap-1">
+              <div className="flex items-center gap-2">
+                {wallets.map((c) => (
+                  <button
+                    key={c.uid}
+                    onClick={() => connectWith(c)}
+                    disabled={connecting}
+                    className="rounded-md bg-[var(--accent)] px-3 py-1.5 font-medium text-black hover:opacity-90 disabled:opacity-60"
+                  >
+                    {connecting ? "Connecting…" : wallets.length > 1 ? c.name : "Connect Wallet"}
+                  </button>
+                ))}
+              </div>
+              {connectErr && <span className="max-w-[240px] text-right text-[11px] text-amber-400">{connectErr}</span>}
+            </div>
           )}
         </div>
       </header>
@@ -147,14 +209,19 @@ export default function Dashboard() {
         <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
           <Stat label="Swap Fee" value={`${feePct}%`} sub={hasManager ? "set by manager" : "default"} />
           <Stat label="Position Liquidity" value={fmtUnits(liquidity)} sub="hook-owned vault" />
-          <Stat label="Total LP Shares" value={fmtUnits(totalShares)} />
+          <Stat label="Total LP Shares" value={fmtUnits(totalShares)} sub="≈ liquidity L" />
           <Stat
             label="Active Range"
             value={tickLower !== undefined ? `${tickLower} ↔ ${tickUpper}` : "—"}
             sub="tick band"
             mono
           />
-          <Stat label="Manager Rent / blk" value={fmtToken(lease?.rentRate)} sub="currency1" />
+          <Stat
+            label="Manager Rent / block"
+            value={fmtRate(lease?.rentRate)}
+            sub={`${TOKEN1.symbol} · ≈ ${perDay(lease?.rentRate)}/day`}
+            mono
+          />
           <Stat
             label="Rent → LPs (live)"
             value={hasManager ? <LiveRent base={liveRent} ratePerBlock={lease?.rentRate} /> : fmtToken(liveRent)}
@@ -164,10 +231,10 @@ export default function Dashboard() {
           />
           <Stat label="Accrued Rent" value={fmtToken(lease?.accruedRent)} sub="pending distribution" />
           <Stat
-            label="Oracle Tick (Pyth)"
-            value={oracleOk ? String(oracleTick) : "stale"}
-            sub={oracleOk ? "ETH/USD" : "needs fresh push"}
-            mono
+            label="ETH / USD (Pyth live)"
+            value={ethUsd ? `$${ethUsd.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : "…"}
+            sub={oracleOk ? `oracle tick ${oracleTick} · band follows this` : "live feed → manager"}
+            accent
           />
         </section>
 
@@ -186,8 +253,9 @@ export default function Dashboard() {
         <section id="auction" className="mt-6 grid gap-4 md:grid-cols-2">
           <Panel title="Harberger Auction">
             <Row k="Current Manager" v={hasManager ? short(lease!.manager) : "none"} mono />
-            <Row k="Rent Rate (R)" v={`${fmtToken(lease?.rentRate)} /blk`} />
-            <Row k="Manager Deposit" v={fmtToken(lease?.deposit)} />
+            <Row k="Rent Rate (R)" v={`${fmtRate(lease?.rentRate)} ${TOKEN1.symbol} / block`} />
+            <Row k="≈ Daily Rent" v={`${perDay(lease?.rentRate)} ${TOKEN1.symbol} / day`} accent />
+            <Row k="Manager Deposit" v={`${fmtToken(lease?.deposit)} ${TOKEN1.symbol}`} />
             <p className="mt-4 text-xs leading-relaxed text-[var(--muted)]">
               Anyone can outbid the manager by posting a higher per-block rent; the new bid activates
               after a <span className="text-[var(--text)]">K-block delay</span> (censorship resistance).
@@ -211,6 +279,12 @@ export default function Dashboard() {
           </Panel>
         </section>
 
+        <section id="contracts" className="mt-6 scroll-mt-6">
+          <Panel title="Deployed Contracts, verify on-chain">
+            <SystemMap />
+          </Panel>
+        </section>
+
         <section className="mt-6">
           <Panel title="Recent Activity">
             <ActivityFeed />
@@ -222,9 +296,14 @@ export default function Dashboard() {
             {connected ? (
               <div className="space-y-4">
                 <div className="flex flex-wrap gap-x-10 gap-y-2">
-                  <Row k="Your Shares" v={fmtUnits(myShares)} />
-                  <Row k="Claimable Rent" v={`${fmtToken(myPending)} currency1`} accent />
+                  <Row k="Your Shares (≈ liquidity L)" v={fmtUnits(myShares)} />
+                  <Row k="Claimable Rent" v={`${fmtToken(myPending)} ${TOKEN1.symbol}`} accent />
                 </div>
+                <p className="text-xs leading-relaxed text-[var(--muted)]">
+                  Shares are denominated in Uniswap <span className="text-[var(--text)]">liquidity (L)</span>,
+                  not tokens. Because liquidity is concentrated in a tight band, a small token deposit mints a
+                  larger L, your first deposit mints shares 1:1 with L.
+                </p>
                 <LpActions shares={myShares} />
               </div>
             ) : (
@@ -235,9 +314,15 @@ export default function Dashboard() {
 
         <footer className="mt-12 border-t border-[var(--border)] pt-6 text-xs text-[var(--muted)]">
           <div className="mono flex flex-wrap gap-x-8 gap-y-1">
-            <span>hook {short(MAESTRO.hook)}</span>
-            <span>manager-callback {short(MAESTRO.managerCallback)}</span>
-            <span>rsc {short(MAESTRO.rsc)}</span>
+            <a href={addressUrl(MAESTRO.hook)} target="_blank" rel="noreferrer" className="hover:text-[var(--accent)]">
+              hook {short(MAESTRO.hook)} ↗
+            </a>
+            <a href={addressUrl(MAESTRO.managerCallback)} target="_blank" rel="noreferrer" className="hover:text-[var(--accent)]">
+              manager-callback {short(MAESTRO.managerCallback)} ↗
+            </a>
+            <a href={addressUrl(MAESTRO.rsc, "lasna")} target="_blank" rel="noreferrer" className="hover:text-[var(--accent)]">
+              rsc {short(MAESTRO.rsc)} ↗
+            </a>
           </div>
         </footer>
       </main>

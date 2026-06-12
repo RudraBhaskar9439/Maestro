@@ -1,12 +1,17 @@
 // Live Maestro deployment (see docs/DEPLOYMENTS.md).
+// Oracle-driven pool initialized at the live ETH/USD price; manager tracks Pyth autonomously.
 export const MAESTRO = {
-  hook: "0x9d756CfA7a0eb3a83e1b6792037b6F950af5eac0" as `0x${string}`,
-  managerCallback: "0x94535D4EC8c013F6D669ae72ab2683aC7EE820C4" as `0x${string}`,
-  rsc: "0x07A577d7cB5De074841e7A47f12Ed3E7dEfde923" as `0x${string}`, // on Reactive Lasna
+  hook: "0xcdb58D67f4aD38705652f21407490df49Cd2eAc0" as `0x${string}`,
+  managerCallback: "0x01462516c7B4E42d7a91807375459B3eb29807EC" as `0x${string}`,
+  rsc: "0x79a6d98a908A339a9E7b5Af5Bff0E84a5d73D234" as `0x${string}`, // on Reactive Lasna
   currency0: "0x4d10aEc03a166d24b214eEDBa7B75c5B4Af3e6aD" as `0x${string}`,
   currency1: "0x83981Eb34e5e68B7E406bc2a5CE0d47495406fc2" as `0x${string}`,
-  poolId: "0x86f460d7dec81de8bd87eacd1896fcc8be6319dd82064704237a870ea41145fb" as `0x${string}`,
+  poolId: "0x7b120a4043ace23580655dd1cecadcde205b20f431b69a19da2c987e77f66f63" as `0x${string}`,
 } as const;
+
+// Display names for the pool tokens (an ETH/USD-fed WETH/USDC pool; rent is paid in USDC).
+export const TOKEN0 = { symbol: "WETH", name: "Wrapped Ether" } as const;
+export const TOKEN1 = { symbol: "USDC", name: "USD Coin" } as const;
 
 export const erc20Abi = [
   {

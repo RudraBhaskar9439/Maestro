@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SiteHeader, SiteFooter } from "../../components/SiteHeader";
 
 export const metadata: Metadata = {
-  title: "Maestro — Docs",
+  title: "Maestro · Docs",
   description: "How the Maestro auction-managed AMM works: am-AMM, concentrated liquidity, and the autonomous cross-chain manager.",
 };
 
@@ -42,7 +42,7 @@ export default function Docs() {
               <b className="text-[var(--text)]">Maestro</b> is an auction-managed AMM (am-AMM) built as a
               Uniswap v4 hook. Liquidity providers deposit into a hook-owned vault; a continuous
               auction sells the right to <b className="text-[var(--text)]">manage</b> the pool. The
-              manager sets the swap fee, concentrates the liquidity, and captures arbitrage — and in
+              manager sets the swap fee, concentrates the liquidity, and captures arbitrage, and in
               exchange pays rent every block that is distributed to LPs.
             </p>
             <p>
@@ -56,7 +56,7 @@ export default function Docs() {
             <p>
               When the market price moves, an AMM pool&apos;s price is briefly stale. Arbitrageurs trade
               against the stale pool and pocket the difference. This leakage —{" "}
-              <b className="text-[var(--text)]">Loss-Versus-Rebalancing (LVR)</b> — is often larger than
+              <b className="text-[var(--text)]">Loss-Versus-Rebalancing (LVR)</b>, is often larger than
               the fees LPs earn on volatile pairs, and today it accrues entirely to searchers and block
               builders. Maestro recaptures it: the right to capture that arbitrage is auctioned, and the
               proceeds (rent) go to LPs.
@@ -66,10 +66,10 @@ export default function Docs() {
           <Section id="amamm" title="am-AMM mechanism">
             <p>The manager role is allocated by a continuous Harberger lease:</p>
             <ul className="ml-5 list-disc space-y-1">
-              <li><Mono>R</Mono> — the per-block rent a bidder commits to pay.</li>
-              <li><Mono>D</Mono> — a deposit (≥ <Mono>R·K</Mono>) the rent is drawn from each block.</li>
-              <li><Mono>K</Mono> — the block delay before a new top bid activates (censorship resistance).</li>
-              <li><Mono>f_max</Mono> — the maximum swap fee the manager may set.</li>
+              <li><Mono>R</Mono>, the per-block rent a bidder commits to pay.</li>
+              <li><Mono>D</Mono>, a deposit (≥ <Mono>R·K</Mono>) the rent is drawn from each block.</li>
+              <li><Mono>K</Mono>, the block delay before a new top bid activates (censorship resistance).</li>
+              <li><Mono>f_max</Mono>, the maximum swap fee the manager may set.</li>
             </ul>
             <p>
               The highest bidder becomes manager and is charged <Mono>R</Mono> per block out of{" "}
@@ -84,7 +84,7 @@ export default function Docs() {
               For the manager to control concentration, the hook must own the liquidity. LPs{" "}
               <Mono>deposit()</Mono> through the hook and receive shares of a single aggregate position;
               external liquidity is blocked. The manager calls <Mono>reposition()</Mono> to move that
-              position into a tighter, tick-aligned band around the price — strictly more capital
+              position into a tighter, tick-aligned band around the price, strictly more capital
               efficient for the same tokens. This is the concentrated-liquidity extension the am-AMM
               paper left open.
             </p>
@@ -100,7 +100,7 @@ export default function Docs() {
             <p>
               Unichain Sepolia can receive Reactive callbacks (it is a supported <i>destination</i>) but
               cannot be subscribed to as an <i>origin</i>, so the price signal is observed on Ethereum
-              Sepolia and the action is taken on Unichain — a genuinely cross-chain loop.
+              Sepolia and the action is taken on Unichain, a genuinely cross-chain loop.
             </p>
           </Section>
 
@@ -120,28 +120,28 @@ export default function Docs() {
 
           <Section id="addresses" title="Deployed addresses">
             <ul className="ml-5 list-disc space-y-1">
-              <li><Mono>MaestroHook</Mono> (Unichain Sepolia) — <Mono>0x9d756CfA7a0eb3a83e1b6792037b6F950af5eac0</Mono></li>
-              <li><Mono>ManagerCallback</Mono> (Unichain Sepolia) — <Mono>0x94535D4EC8c013F6D669ae72ab2683aC7EE820C4</Mono></li>
-              <li><Mono>MaestroManagerRSC</Mono> (Reactive Lasna) — <Mono>0x07A577d7cB5De074841e7A47f12Ed3E7dEfde923</Mono></li>
-              <li><Mono>currency0 / currency1</Mono> — <Mono>0x4d10…e6aD</Mono> / <Mono>0x8398…6fc2</Mono></li>
+              <li><Mono>MaestroHook</Mono> (Unichain Sepolia), <Mono>0xcdb58D67f4aD38705652f21407490df49Cd2eAc0</Mono></li>
+              <li><Mono>ManagerCallback</Mono> (Unichain Sepolia), <Mono>0x01462516c7B4E42d7a91807375459B3eb29807EC</Mono></li>
+              <li><Mono>MaestroManagerRSC</Mono> (Reactive Lasna), <Mono>0x79a6d98a908A339a9E7b5Af5Bff0E84a5d73D234</Mono></li>
+              <li><Mono>WETH / USDC</Mono> (currency0 / currency1), <Mono>0x4d10…e6aD</Mono> / <Mono>0x8398…6fc2</Mono></li>
             </ul>
           </Section>
 
           <Section id="using" title="Using Maestro">
             <p>From the <a className="text-[var(--accent)]" href="/app">app</a>, connected to Unichain Sepolia:</p>
             <ul className="ml-5 list-disc space-y-1">
-              <li><b className="text-[var(--text)]">Deposit</b> — approve currency0/1 and add liquidity; receive shares.</li>
-              <li><b className="text-[var(--text)]">Claim Rent</b> — withdraw your share of accrued manager rent.</li>
-              <li><b className="text-[var(--text)]">Withdraw</b> — burn shares and redeem the underlying.</li>
+              <li><b className="text-[var(--text)]">Deposit</b>, approve WETH/USDC and add liquidity; receive shares.</li>
+              <li><b className="text-[var(--text)]">Claim Rent</b>, withdraw your share of accrued manager rent.</li>
+              <li><b className="text-[var(--text)]">Withdraw</b>, burn shares and redeem the underlying.</li>
             </ul>
           </Section>
 
           <Section id="limits" title="Security & limitations">
             <ul className="ml-5 list-disc space-y-1">
-              <li>This is a hackathon prototype on testnet — unaudited; do not use with real funds.</li>
+              <li>This is a hackathon prototype on testnet, unaudited; do not use with real funds.</li>
               <li>The concentrated-liquidity am-AMM is a working approach, not a formal optimality proof.</li>
               <li>Swap-fee distribution to shareholders is a known follow-up; manager rent is distributed today.</li>
-              <li>Manager rent is denominated in the pool&apos;s currency1.</li>
+              <li>Manager rent is denominated in USDC (the pool&apos;s currency1).</li>
             </ul>
           </Section>
         </article>

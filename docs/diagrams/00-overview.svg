@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -16 1570 816" width="1570" height="816" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+<rect x="0" y="-16" width="1570" height="816" fill="#ffffff"/>
+<rect x="40" y="100" width="280" height="660" rx="10" fill="none" stroke="#2f9e44" stroke-width="1.5" stroke-dasharray="7 5"/>
+<rect x="360" y="100" width="320" height="660" rx="10" fill="none" stroke="#6741d9" stroke-width="1.5" stroke-dasharray="7 5"/>
+<rect x="720" y="100" width="520" height="660" rx="10" fill="none" stroke="#1971c2" stroke-width="1.5" stroke-dasharray="7 5"/>
+<rect x="1280" y="100" width="250" height="660" rx="10" fill="none" stroke="#1e1e1e" stroke-width="1.5" stroke-dasharray="7 5"/>
+<rect x="80" y="320" width="200" height="110" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<rect x="400" y="300" width="240" height="130" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2"/>
+<rect x="760" y="160" width="250" height="90" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+<rect x="760" y="310" width="430" height="160" rx="10" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+<rect x="760" y="540" width="250" height="100" rx="10" fill="#e9ecef" stroke="#1e1e1e" stroke-width="2"/>
+<rect x="1050" y="540" width="140" height="45" rx="10" fill="#e9ecef" stroke="#1e1e1e" stroke-width="2"/>
+<rect x="1050" y="595" width="140" height="45" rx="10" fill="#e9ecef" stroke="#1e1e1e" stroke-width="2"/>
+<rect x="1310" y="190" width="190" height="80" rx="10" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<rect x="1310" y="380" width="190" height="80" rx="10" fill="#ffec99" stroke="#e8590c" stroke-width="2"/>
+<rect x="1310" y="560" width="190" height="90" rx="10" fill="#d0bfff" stroke="#6741d9" stroke-width="2"/>
+<line x1="280" y1="375" x2="400" y2="365" stroke="#495057" stroke-width="2"/>
+<polyline points="390.52663699239315,370.59065231668956 400,365 389.73195471939084,361.05446504066174" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="640" y1="365" x2="760" y2="205" stroke="#495057" stroke-width="2"/>
+<polyline points="757.8847458246512,215.79470702583768 760,205 750.2293524242936,210.05316197556942" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="885" y1="250" x2="975" y2="310" stroke="#495057" stroke-width="2"/>
+<polyline points="964.10457981962,308.4867851795046 975,310 969.4126400963196,300.5246947644551" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="975" y1="470" x2="885" y2="540" stroke="#495057" stroke-width="2"/>
+<polyline points="889.8809960100228,530.1422173918197 885,540 895.755942161165,537.6957195861453" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="1010" y1="590" x2="1050" y2="617.5" stroke="#495057" stroke-width="2"/>
+<polyline points="1039.1273065761118,615.8313065859364 1050,617.5 1044.5485578409143,607.9458502007691" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="1310" y1="230" x2="1190" y2="390" stroke="#495057" stroke-width="2"/>
+<polyline points="1192.1152541753488,379.2052929741623 1190,390 1199.7706475757066,384.9468380244306" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="1310" y1="605" x2="1190" y2="390" stroke="#495057" stroke-width="2"/>
+<polyline points="1199.0052418580933,396.3170894466711 1190,390 1190.6494019515778,400.9808140456565" fill="none" stroke="#495057" stroke-width="2"/>
+<line x1="1310" y1="420" x2="1010" y2="590" stroke="#495057" stroke-width="2"/>
+<polyline points="1016.2586202748818,580.9540245271812 1010,590 1020.9763767621765,589.279477151819" fill="none" stroke="#495057" stroke-width="2"/>
+<text x="470" y="52" fill="#1e1e1e" font-size="28" font-weight="700" text-anchor="start">Maestro — Full System</text>
+<text x="440" y="75" fill="#868e96" font-size="15" text-anchor="start">Auction-managed AMM with an autonomous cross-chain pool manager</text>
+<text x="54" y="123" fill="#2f9e44" font-size="13" text-anchor="start">1 · Ethereum Sepolia  (origin)</text>
+<text x="374" y="123" fill="#6741d9" font-size="13" text-anchor="start">2 · Reactive Lasna  (ReactVM)</text>
+<text x="734" y="123" fill="#1971c2" font-size="13" text-anchor="start">3 · Unichain Sepolia  (destination)</text>
+<text x="1294" y="123" fill="#1e1e1e" font-size="13" text-anchor="start">Participants</text>
+<text x="180" y="363.75" fill="#2f9e44" font-size="18" text-anchor="middle" dominant-baseline="central">Pyth Oracle</text>
+<text x="180" y="386.25" fill="#2f9e44" font-size="18" text-anchor="middle" dominant-baseline="central">ETH/USD price feed</text>
+<text x="520" y="354.375" fill="#6741d9" font-size="17" text-anchor="middle" dominant-baseline="central">MaestroManagerRSC</text>
+<text x="520" y="375.625" fill="#6741d9" font-size="17" text-anchor="middle" dominant-baseline="central">subscribe + react()</text>
+<text x="404" y="462" fill="#6741d9" font-size="12" text-anchor="start">decode the LIVE price →</text>
+<text x="404" y="477" fill="#6741d9" font-size="12" text-anchor="start">forward it cross-chain →</text>
+<text x="404" y="492" fill="#6741d9" font-size="12" text-anchor="start">repositionToPrice</text>
+<text x="885" y="196.25" fill="#1971c2" font-size="14" text-anchor="middle" dominant-baseline="central">ManagerCallback</text>
+<text x="885" y="213.75" fill="#1971c2" font-size="14" text-anchor="middle" dominant-baseline="central">wins auction · repositionToPrice</text>
+<text x="975" y="347.5" fill="#1971c2" font-size="17" text-anchor="middle" dominant-baseline="central">MaestroHook  (Uniswap v4)</text>
+<text x="975" y="368.75" fill="#1971c2" font-size="17" text-anchor="middle" dominant-baseline="central"></text>
+<text x="975" y="390" fill="#1971c2" font-size="17" text-anchor="middle" dominant-baseline="central">• Harberger auction engine</text>
+<text x="975" y="411.25" fill="#1971c2" font-size="17" text-anchor="middle" dominant-baseline="central">• hook-owned liquidity vault</text>
+<text x="975" y="432.5" fill="#1971c2" font-size="17" text-anchor="middle" dominant-baseline="central">• dynamic fee · OracleMath</text>
+<text x="885" y="590" fill="#1e1e1e" font-size="18" text-anchor="middle" dominant-baseline="central">Uniswap v4 Pool</text>
+<text x="1120" y="562.5" fill="#1e1e1e" font-size="14" text-anchor="middle" dominant-baseline="central">WETH</text>
+<text x="1120" y="617.5" fill="#1e1e1e" font-size="12" text-anchor="middle" dominant-baseline="central">USDC  (rent)</text>
+<text x="1405" y="230" fill="#2f9e44" font-size="18" text-anchor="middle" dominant-baseline="central">LPs</text>
+<text x="1405" y="420" fill="#e8590c" font-size="18" text-anchor="middle" dominant-baseline="central">Swappers</text>
+<text x="1405" y="593.75" fill="#6741d9" font-size="18" text-anchor="middle" dominant-baseline="central">Bidders /</text>
+<text x="1405" y="616.25" fill="#6741d9" font-size="18" text-anchor="middle" dominant-baseline="central">Managers</text>
+<text x="287.5" y="361" fill="#495057" font-size="13" text-anchor="start">PriceFeedUpdate</text>
+<text x="630" y="276" fill="#495057" font-size="13" text-anchor="start">cross-chain callback</text>
+<text x="870.5" y="271" fill="#495057" font-size="13" text-anchor="start">repositionToPrice</text>
+<text x="877.5" y="496" fill="#495057" font-size="13" text-anchor="start">modifyLiquidity</text>
+<text x="991.5" y="594.75" fill="#495057" font-size="13" text-anchor="start">rent / fees</text>
+<text x="1183.5" y="301" fill="#495057" font-size="13" text-anchor="start">deposit · claimRent</text>
+<text x="1197.5" y="488.5" fill="#495057" font-size="13" text-anchor="start">bid() · K-delay</text>
+<text x="1097" y="496" fill="#495057" font-size="13" text-anchor="start">swap · dynamic fee</text>
+</svg>
