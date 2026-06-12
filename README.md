@@ -11,14 +11,12 @@
 [![Pyth](https://img.shields.io/badge/Oracle-Pyth-7c3aed)](https://pyth.network)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.30-363636?logo=solidity)](https://soliditylang.org)
 [![Foundry](https://img.shields.io/badge/Built%20with-Foundry-000000)](https://getfoundry.sh)
-[![Tests](https://img.shields.io/badge/tests-43%20passing-2f9e44)](packages/contracts/test)
-[![Coverage](https://img.shields.io/badge/coverage-97%25%20lines-2f9e44)](#testing)
 [![Next.js](https://img.shields.io/badge/Frontend-Next.js%2016-000000?logo=nextdotjs)](https://nextjs.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22d3ee.svg)](./LICENSE)
 
 **Live on Unichain Sepolia + Reactive Lasna** · Built for **UHI9**, Uniswap Hook Incubator, Cohort 9
 
-[**Live app**](#) · [**Demo video**](#) · [**Docs & diagrams**](docs/) · [**Architecture**](#architecture)
+[**Live app**](https://maestro-iota-eight.vercel.app/) · [**Demo video**](https://www.youtube.com/watch?v=k83N_fZ5K1Y) · [**Docs & diagrams**](docs/) · [**Architecture**](#architecture)
 
 </div>
 
@@ -180,12 +178,11 @@ forge coverage --ir-minimum --no-match-coverage "(test|script)"   # coverage rep
 
 Covers the auction engine, rent accounting, oracle math, the cross-chain callback's access control, a complete end-to-end lifecycle, and the Option-A arbitrage path (a swap moving spot toward the oracle band).
 
-**Coverage** (`forge coverage --ir-minimum`, src contracts):
+**Coverage** (`forge coverage --ir-minimum`, src contracts), 43 tests passing, **97.0% lines** (257/265):
+
 <p align="center">
   <img src="assets/coverage-report.png" alt="forge coverage: 43 tests passing, 97% line coverage across src contracts" width="100%"/>
 </p>
-
-<p align="center"><sub><code>forge coverage --ir-minimum --no-match-coverage "(test|script)"</code> 
 
 > **`via_ir` note:** compiled with `via_ir = true` + `optimizer_runs = 100` to stay under EIP-170. Under IR, `block.number` is cached per function frame, so tests use absolute `vm.roll` targets.
 
